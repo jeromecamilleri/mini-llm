@@ -24,7 +24,7 @@ Order matters: `05_inference` lessons need the checkpoints written by `04_traini
 
 ## Architecture
 
-Layout under `src/`, numbered in learning order: `01_fundamentals/` (labs 1–2), `02_tokenizer/` (lab 3), `03_transformer/` (lab 4, NumPy: attention to a full small GPT), `04_training/` (lab 6, PyTorch GPT, training loop, checkpoints), `05_inference/` (lab 7, generation, temperature/Top-K/Top-P, model comparison), `06_corpus/` (346 Kindle books: extraction, cleaning, BPE, tokenization, training, chat, embeddings; experiments tracked in `docs/suivi_experiences_corpus.md`). Each folder has a `README.md` with its lesson table. Always refer to chapters by folder name (`02_tokenizer`), never « Labo N »: the numbers do not match the folders. Data flows `datasets/originals → extracted → cleaned → tokenized`; models go to `models/checkpoints` then `models/final`; runs go under `experiments/{french,technical,mixed,comparisons}`.
+Layout under `src/`, numbered in learning order: `01_fundamentals/` (labs 1–2), `02_tokenizer/` (lab 3), `03_transformer/` (lab 4, NumPy: attention to a full small GPT), `04_training/` (lab 6, PyTorch GPT, training loop, checkpoints), `05_inference/` (lab 7, generation, temperature/Top-K/Top-P, model comparison), `06_corpus/` (346 Kindle books: extraction, cleaning, BPE, tokenization, training, chat, embeddings; experiments tracked in `docs/suivi_experiences_corpus.md`). Each folder has a `README.md` with its lesson table. Always refer to chapters by folder name (`02_tokenizer`), never « Labo N »: the numbers do not match the folders. Data flows `datasets/originals → extracted → cleaned → tokenized`; models go to `models/checkpoints` then `models/final`; each experiment writes its curve and output to `logs/` and its checkpoints to `models/checkpoints/` (tracked in `docs/suivi_experiences_corpus.md`).
 
 Each `src/NN_*/` folder has three kinds of files:
 - `tools/`: library-style modules (e.g. `activations.py`, `forward.py`, `backpropagation.py`, `optimiseurs.py`, `vocabulary.py`) with a docstring stating the lab and the formula.
@@ -36,7 +36,7 @@ Each `src/NN_*/` folder has three kinds of files:
 
 - Lessons are for a learner: define every term at its first occurrence, open each sheet with « L'essentiel en 30 secondes », keep the same running example (« le chat dort . ») and simple French. When the learner says he did not understand something, explain it in chat then add the explanation to both the sheet and the lesson docstring.
 - Do not commit on your own; leave changes uncommitted for review.
-- Model checkpoints (`models/checkpoints/*.pt`, about 350 KB each) and `logs/*.csv` are generated outputs; `.gitignore` does not exclude them yet.
+- Books, datasets (including `datasets/cleaned_v2/`), `.bin` files and `models/checkpoints/*` are git-ignored (copyrighted/heavy): add any new data folder to `.gitignore` BEFORE creating it, and check `git status` before every commit. `logs/*.csv|txt|png` are small and tracked. Illustrations live in `img/`.
 - Build core mechanisms by hand (NumPy first, then PyTorch tensors); no prefab GPT architectures, pretrained models, high-level training frameworks, or tokenizer libraries that hide the mechanics.
 - Never modify source datasets in `datasets/originals`; extraction/cleaning must write new files.
 - For experiments, change only one variable at a time (corpus, architecture, or hyperparameters).

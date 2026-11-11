@@ -90,8 +90,9 @@ Essais possibles pour les séparer, à partir de B (une variable chacun, environ
 
 | Essai | Changement | Question |
 |---|---|---|
-| P1 | `N_BLOCS` 4 → 6, le reste comme B | la profondeur aide-t-elle ? |
-| P2 | `D` 256 → 384, le reste comme B | la largeur aide-t-elle ? |
+| P1 | `N_BLOCS` 4 → 6, le reste comme B | la profondeur aide-t-elle ? **Oui : −0,07 sur B** (arrêté à 15 500, voir « Essai P1 ») |
+| P2 | `D` 256 → 384, le reste comme B | la largeur aide-t-elle ? **Oui : −0,13 sur B** (arrêté à 5 500, voir « Essai P2 ») |
+| P4 | `N_BLOCS` 6 → 8, le reste comme A (d 384, 6 têtes, LR 6e-4) | la profondeur aide-t-elle encore sur un modèle large ? (~95 min, préparé le 11 novembre) |
 | P3 | `N_TETES` 4 → 8, le reste comme B | combien de têtes ? |
 
 ## Registre : nom du modèle → réglages
@@ -104,6 +105,8 @@ Chaque entraînement écrit aussi `models/checkpoints/{NOM}_reglages.json` (tous
 | `livres_T256` (B) | 256 | 4 | 4 | 256 | 32 | 8 192 | 20 000 | 1e-3 → 1e-4 | 5 586 432 | 3,227 |
 | `livres_A_d384` (A) | 384 | 6 | 6 | 256 | 32 | 8 192 | 20 000 | 6e-4 → 6e-5 | 14 287 872 | 3,068 |
 | `livres_D_filtre` (D) | 384 | 6 | 6 | 256 | 32 | 8 192 | 20 000 | 6e-4 → 6e-5 | 14 287 872 | 3,106 (3,078 filtrée) |
+| `livres_P2_d384` (P2) | 384 | 4 | 4 | 256 | 32 | 8 192 | 5 500 (arrêté) | 1e-3 → 1e-4 | 10 738 944 | 3,402 à 5 500 |
+| `livres_P1_6blocs` (P1) | 256 | 6 | 4 | 256 | 32 | 8 192 | 15 500 (arrêté) | 1e-3 → 1e-4 | 7 165 952 | 3,193 à 15 500 |
 
 **TAILLE_BATCH** : nombre de fenêtres lues avant chaque correction des poids ; tokens lus par étape = batch × T. Détail dans `src/06_corpus/fiches/07_entrainement_corpus.md`.
 
@@ -118,8 +121,118 @@ Chaque expérience écrit ses propres fichiers (réglage `NOM` dans `07_entraine
 
 | A d = 384 | `models/checkpoints/livres_A_d384_meilleur.pt` | `logs/entrainement_livres_A_d384.csv` |
 | D texte filtré | `models/checkpoints/livres_D_filtre_meilleur.pt` | `logs/entrainement_livres_D_filtre.csv` |
+| P1 6 blocs | `models/checkpoints/livres_P1_6blocs_meilleur.pt` | `logs/entrainement_livres_P1_6blocs.csv` |
+| P2 d = 384 | `models/checkpoints/livres_P2_d384_meilleur.pt` | `logs/entrainement_livres_P2_d384.csv` |
 
 Pour utiliser un modèle : changer `CHECKPOINT` dans `08_generation_corpus.py` ou `10_chat.py` ; pour sa courbe, `CSV` dans `09_courbe_perte.py`.
+
+### Essai P1 : 6 blocs au lieu de 4, depuis B (11 novembre 2026)
+
+Sortie complète : `logs/entrainement_livres_P1_6blocs_sortie.txt` ; courbe : `logs/entrainement_livres_P1_6blocs.csv`.
+
+**Arrêté volontairement (Ctrl-C) à l'étape 15 500 sur 20 000** : l'écart avec B était stable depuis l'étape 3 500, la conclusion ne changeait plus. Ce n'est donc pas une mesure finale. Réglages : d 256, 4 têtes, 6 blocs, T 256, LR 1e-3 → 1e-4 (le LR n'avait pas fini de décroître : 2,1e-4 à l'arrêt), texte `train`, 7 165 952 paramètres, ~2 min pour 1 000 étapes (≈ 42 min prévues pour 20 000).
+
+| À l'étape 15 500 | B (4 blocs) | P1 (6 blocs) | A (d 384, 6 blocs, 6 têtes) |
+|---|---|---|---|
+| Validation | 3,269 | **3,193** | 3,106 |
+| Train | 3,091 | 3,002 | 2,893 |
+
+- **P1 − B = −0,076** à 15 500 ; l'écart reste entre −0,06 et −0,07 de l'étape 3 500 à 14 500 : la profondeur seule aide.
+- **P1 − A = +0,087** : A reste meilleur, donc largeur, têtes et LR comptent aussi.
+- **Extrapolation, non mesurée** : P1 finirait vers 3,155 à 20 000 (3,227 − 0,07). Sur les −0,16 de A sur B, environ −0,07 (un peu moins de la moitié) viendrait de la profondeur, le reste (~ −0,09) de la largeur, des têtes et du LR.
+- Suite : P2 (largeur seule, d 384, 4 blocs, 4 têtes, depuis B), `NOM = "livres_P2_d384"`, 10 738 944 paramètres, lancé le 11 novembre.
+
+### Essai P2 : d = 384 au lieu de 256, depuis B (11 novembre 2026)
+
+Sortie complète : `logs/entrainement_livres_P2_d384_sortie.txt` ; courbe : `logs/entrainement_livres_P2_d384.csv`.
+
+**Arrêté volontairement (Ctrl-C) à l'étape 5 500 sur 20 000** : non finalisé, aucune valeur finale mesurée. Réglages : d 384, 4 têtes, 4 blocs, T 256, LR 1e-3 → 1e-4, texte `train`, 10 738 944 paramètres, ~2,2 min pour 1 000 étapes (≈ 48 min prévues).
+
+| Validation | B | P1 (6 blocs) | **P2 (d 384)** | D | A |
+|---|---|---|---|---|---|
+| étape 500 | 4,745 | 4,711 | 4,501 | | 4,669 |
+| étape 3 000 | 3,714 | 3,653 | 3,585 | 3,611 | 3,580 |
+| étape 5 500 | 3,530 | 3,464 | **3,402** | 3,408 | 3,375 |
+
+- P2 − B = −0,13 (stable depuis 2 500) : **la largeur aide plus que la profondeur** (P1 : −0,07).
+- Départ très rapide (−0,24 sous B à 500), puis avance perdue sur A vers 3 000. À 5 500 : P2 − A = **+0,026** et l'écart grandit lentement. Correction de ma lecture à 3 500 (« 6 blocs et têtes de A ajoutent peu ») : ils apportent un peu, ~0,03 à 5 500.
+- Les gains ne s'additionnent pas : −0,07 (profondeur) + −0,13 (largeur) = −0,20, A fait −0,16 sur B.
+- Extrapolation, non mesurée : P2 finirait vers 3,10 à 3,12, au niveau de D (3,106), donc moins bon que A.
+- Mesure de mémoire (GTX 1070, 6 itérations, fp32, batch 32, T 256) pour la suite : d 256 / 8 blocs 1,8 Gio ; d 384 / 8 blocs 2,6 Gio ; d 512 / 8 blocs 3,4 Gio sur 8 Gio. La mémoire n'est pas la limite, le temps l'est.
+
+### Essai P4 : 8 blocs au lieu de 6, depuis A (11 novembre 2026)
+
+d 384, 6 têtes, **8 blocs**, T 256, LR 6e-4 → 6e-5, texte `train`, 17,8 M paramètres, `NOM = "livres_P4_8blocs"`. Durée mesurée par le test : 0,277 s/étape, soit ≈ 92 min ; mémoire 2,6 Gio. Coupé vers l'étape 2 000 puis repris (`REPRENDRE = True`, mêmes réglages) : le CSV a été écrit à la suite.
+
+**Résultat (étape 20 000, mesure rapide) : validation 3,0331, train 2,7931**, contre A 3,068 / 2,842 : **−0,035** sur la validation, −0,049 sur le train (écart train/val 0,24 contre 0,23 pour A : un peu plus de mémorisation).
+
+| Étape | P4 − A (validation) |
+|---|---|
+| 3 000 | −0,021 |
+| 10 000 | −0,027 |
+| 12 000 | −0,031 |
+| 16 000 | −0,036 |
+| 18 000 | −0,039 |
+| 20 000 | −0,035 |
+
+L'avance s'est maintenue (contrairement à P2) : stable entre −0,03 et −0,04 depuis l'étape 4 000. Gain réel mais petit, au niveau du seuil de bruit retenu (~0,03), pour +25 % de temps. Deux blocs de plus donnent peu : la profondeur seule est un levier faible à ce stade (B vers P1 : −0,07 ; largeur : −0,13). P4 est le meilleur modèle à ce jour sur la mesure rapide ; il reste à le confirmer sur la mesure complète (leçon 15) et sur les textes. Sortie de la reprise archivée : `logs/entrainement_livres_P4_8blocs_sortie.txt` (elle commence à l'étape 2 000, reprise à 1 525 ; la partie 500-1 500 du premier lancement n'y figure pas, elle est dans le CSV). Durée totale de la reprise : 89 min pour 18 475 étapes, soit environ 92 min pour 20 000, comme mesuré.
+
+### Leçon 15 : mesure sur toute la validation (11 novembre 2026)
+
+`15_validation_complete.py`, sur CPU, fenêtre glissante, 3 046 367 tokens comptés une fois chacun. Sortie : `logs/validation_complete_sortie.txt`.
+
+| Modèle | Mesure rapide | Complète | Écart | Bits/octet | Durée CPU |
+|---|---|---|---|---|---|
+| B | 3,2274 | 3,1815 | −0,0459 | 1,401 | 429 s |
+| A | 3,0680 | 3,0156 | −0,0524 | 1,328 | 904 s |
+| D | 3,1061 | 3,0497 | −0,0563 | 1,343 | 855 s |
+| P4 | 3,0331 | 2,9792 | −0,0539 | 1,312 | 81 s (GPU) |
+
+P4 : sortie dans `logs/validation_complete_P4_sortie.txt`. **P4 − A = −0,0364** sur la mesure complète (−0,035 en rapide) : le gain est confirmé, de même taille. Le GPU a mesuré les 3 M de tokens en 81 s, contre 429 à 904 s sur CPU.
+
+- Le **classement est confirmé** : A < D < B. A − B : −0,166 (rapide −0,159) ; D − A : +0,034 (rapide +0,038).
+- L'écart « rapide − complète » varie de 0,010 entre modèles : petit, il ne change aucun classement mais montre que la mesure rapide a une incertitude de cet ordre.
+- Les valeurs complètes sont plus basses que celles de l'entraînement : ne pas les mélanger.
+- P4 : voir la ligne du tableau ci-dessus (mesuré ensuite sur GPU). Référence des dialogues : `--validation=theatre_validation` (leçon 17).
+
+### Théâtre (Claire, TheatreGratuit) : préparation (11 novembre 2026)
+
+**Référence sur les dialogues** (`--validation=theatre_validation`, 277 026 tokens, modèles entraînés sur les livres seuls ; sortie : `logs/validation_dialogues_reference_sortie.txt`) :
+
+| Modèle | Perte | Bits/octet |
+|---|---|---|
+| B | 2,9795 | 1,487 |
+| A | 2,8598 | 1,427 |
+| D | 2,8648 | 1,430 |
+| P4 | **2,8361** | 1,415 |
+
+L'ordre est le même que sur les livres (P4 < A < D < B). Les pertes des dialogues sont plus basses que celles des livres (2,84 contre 2,98 pour P4) mais **ne se comparent pas** : autre texte (répliques courtes, répétitives), autre nombre de tokens par octet (0,346 contre 0,305 ; octets estimés sur le texte décodé). Seule la comparaison entre modèles sur le même fichier a un sens. Le théâtre apprendra à un modèle plus que P4 − A (0,024 ici) seulement si son gain dépasse cet ordre de grandeur.
+
+Leçons 16 et 17. Source `datasets/claire/train.txt` (CC BY-NC-SA, ignoré par git) : 155 066 répliques, 6,76 M tokens. Après nettoyage : 150 799 répliques (97,2 %), 5,02 M tokens. Coupé en `theatre_train.bin` (4 743 790) et `theatre_validation.bin` (277 026, dialogues jamais appris) ; `train_theatre.bin` = livres + théâtre = 70 959 954 tokens (théâtre 6,7 %). Prochain essai (option « mélange simple ») : changer seulement `DONNEES_TRAIN = "train_theatre"`, avec les réglages d'A ou de P4 ; mesurer la perte sur les 17 livres ET sur `theatre_validation` ; relever d'abord la perte de référence sur `theatre_validation` du modèle de comparaison.
+
+### Essai P4 + théâtre : résultat (11 novembre 2026)
+
+Entraîné de zéro, 20 000 étapes, 98 min (P4 : 89 min ; la mesure supplémentaire sur les dialogues et mes tests CPU en parallèle expliquent probablement l'écart, non vérifié). Sortie : `logs/entrainement_livres_P4_theatre_sortie.txt`.
+
+| | P4 (livres seuls) | P4 + théâtre | Écart |
+|---|---|---|---|
+| Validation des 17 livres, rapide, étape 20 000 | 3,0331 | **3,0237** | −0,009 |
+| Train | 2,7931 | 2,7747 | −0,018 |
+| Dialogues (`theatre_validation`), **rapide**, étape 20 000 | 2,8726 (calculé après coup sur CPU, même méthode) | **2,7271** | **−0,146** |
+
+- **Livres** : −0,009, sous le seuil de bruit (~0,03) : le théâtre n'a ni aidé ni gêné la lecture des romans.
+- **Dialogues** : −0,146, soit six fois l'écart P4 − A sur les dialogues (0,026 en mesure rapide : 2,8995 contre 2,8726). Le gain est net, constant dès 1 000 étapes (3,513 ; P4 non mesuré à ce moment).
+- La référence « 2,8726 » pour P4 n'a pas été mesurée pendant son entraînement : je l'ai calculée sur CPU avec les mêmes fenêtres (graine 123, 40 batchs de 32 × 256) à partir du checkpoint final. Sa mesure complète est 2,8361.
+- Réserve : la validation de dialogues est petite (277 026 tokens, quelques pièces). Elle mesure la prédiction du théâtre inconnu, pas la qualité d'une conversation. Seul le chat (`10_chat.py livres_P4_theatre_meilleur.pt`) tranche.
+- Textes générés (amorce « Il était une fois ») : plus de répliques courtes avec tirets (« - Attendez. - Ouais. »), quelques « Ah çà, mon Dieu ! » à 6 500 (couleur du théâtre ancien), mais toujours des phrases sans fil.
+- Mesures complètes (leçon 15, livres et dialogues) à lancer sur `livres_P4_theatre_meilleur.pt` pour confirmer.
+- **Chat à la main** (`10_chat.py livres_P4_theatre_meilleur.pt`, test de Jérôme, 7 échanges) : réponses courtes sous forme de répliques (« - ... oui », « - ... quelle journée de travail »), un peu mieux que P4 sur les demandes brèves, mais **toujours peu de sens** : pas de lien net avec la question. Tics du théâtre : points de suspension « ... » en début de réplique, vouvoiement, tournures de scène (« je ne suis pas votre fils », « je ne peux pas vous laisser passer »). Sur l'entrée « je vous trouve beau », la réponse est « - . ». Ce test n'est pas systématique : mêmes messages non redonnés à P4.
+
+### Essai P4 + théâtre : préparé (11 novembre 2026)
+
+Mêmes réglages que P4 (d 384, 6 têtes, 8 blocs, T 256, LR 6e-4 → 6e-5, 20 000 étapes, graine 0, repart de zéro). **Seule variable : `DONNEES_TRAIN = "train_theatre"`** (70 959 954 tokens, 6,7 % de théâtre ; 2,31 passages au lieu de 2,47). `NOM = "livres_P4_theatre"`, `REPRENDRE = False`. Le script mesure aussi la perte sur `theatre_validation` (colonne `perte_dialogues` du CSV) ; le « record » et `_meilleur.pt` restent choisis sur les 17 livres, comme pour P4. Durée attendue ≈ 90 min (même taille de modèle). Testé 20 étapes sur GPU, fichiers de test supprimés.
+
+À comparer à P4 : livres 3,033 (rapide) / 2,979 (complète) ; dialogues 2,836 (complète). La perte « dialogues » du CSV est une mesure rapide (40 batchs) : la comparer à la mesure complète finale via la leçon 15, pas directement à 2,836.
 
 ### Expérience B : T = 256, batch 32 (11 novembre 2026)
 

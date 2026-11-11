@@ -1,0 +1,19 @@
+camillej@CamUbuntu:/dataSSD/travailJerome/mini-llm$ .venv/bin/python src/06_corpus/scripts/15_validation_complete.py --validation=theatre_validation livres_T256_meilleur.pt livres_A_d384_meilleur.pt livres_D_filtre_meilleur.pt livres_P4_8blocs_meilleur.pt cuda
+ÉTAPE 1 — la validation
+  theatre_validation : 277,026 tokens, 800,957 octets (0.346 token par octet)
+  appareil : cuda
+
+ÉTAPE 2 — perte de chaque modèle sur la validation (chaque token compté une fois)
+  livres_T256_meilleur.pt        T 256 (étape 20000) : perte 2.9795 (perplexité 19.7), 1.487 bit/octet  [276,992 tokens, 3 s]
+  livres_A_d384_meilleur.pt      T 256 (étape 20000) : perte 2.8598 (perplexité 17.5), 1.427 bit/octet  [276,992 tokens, 6 s]
+  livres_D_filtre_meilleur.pt    T 256 (étape 20000) : perte 2.8648 (perplexité 17.5), 1.430 bit/octet  [276,992 tokens, 6 s]
+  livres_P4_8blocs_meilleur.pt   T 256 (étape 20000) : perte 2.8361 (perplexité 17.0), 1.415 bit/octet  [276,992 tokens, 7 s]
+
+ÉTAPE 3 — bilan
+  modèle                          mesure rapide  complète   écart  bit/octet
+  livres_T256_meilleur.pt                     ?    2.9795       ?      1.487
+  livres_A_d384_meilleur.pt                   ?    2.8598       ?      1.427
+  livres_D_filtre_meilleur.pt                 ?    2.8648       ?      1.430
+  livres_P4_8blocs_meilleur.pt                ?    2.8361       ?      1.415
+  mesure rapide = celle de l'entraînement (40 batchs au hasard) ; complète = toute la validation, avec contexte.
+  Un écart négatif est attendu : la fenêtre glissante donne du contexte à chaque token.

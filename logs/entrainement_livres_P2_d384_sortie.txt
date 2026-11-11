@@ -1,0 +1,38 @@
+camillej@CamUbuntu:/dataSSD/travailJerome/mini-llm$ .venv/bin/python src/06_corpus/scripts/07_entrainement_corpus.py
+ÉTAPE 1 — le modèle
+  appareil : cuda (NVIDIA GeForce GTX 1070)
+  10,738,944 paramètres (dont 3,542,016 dans les embeddings)
+  66,216,164 tokens d'entraînement, 3,046,367 de validation
+  perte d'un modèle au hasard : ln(4612) = 8.44
+  8,192 tokens par étape -> 2.47 passage(s) sur le corpus
+
+ÉTAPE 2 — entraînement
+  étape    500 : train 5.490  val 4.501 (perplexité 90)  | 1 min, reste ~48 min  <- record
+      « "Il était une fois.\nLes avales : « Maintenant » « - mais » santé qui va pas à ses parents et se préser d'attrable ? « Je n'ai pas encore vous aimait, vous" »
+  étape   1000 : train 4.107  val 4.021 (perplexité 56)  | 2 min, reste ~46 min  <- record
+      « "Il était une fois à la droite.\n- C'est pas bon. En cause, j'ai rappelé mon entrée, je ne devrais pas dans une bonne idée - je me suis bon compte plus que je me pose. C'est pas" »
+  étape   1500 : train 3.776  val 3.828 (perplexité 46)  | 4 min, reste ~45 min  <- record
+      « "Il était une fois totalement de coups d'une journée.\n- Je suis sûre. »\nFernanda lui dressa son directeur, et s'écouta la situation d'un éclat de sa plage, encore en arrière" »
+  étape   2000 : train 3.613  val 3.721 (perplexité 41)  | 5 min, reste ~44 min  <- record
+      « "Il était une fois impressionnant.\n« Mais, nous ne serions pas trop de trucs, il a fait ! Vous êtes captante. Et nous nous serions là-haut, il y a-t-elle, tu l'" »
+  étape   2500 : train 3.520  val 3.636 (perplexité 38)  | 6 min, reste ~43 min  <- record
+      « "Il était une fois de plus en plus, sous les couleurs d'une forêt et de plus amplets, l'un des coins épuisés se dressait vers le shérif. Personne ne savait comment les piquer par les objets" »
+  étape   3000 : train 3.448  val 3.585 (perplexité 36)  | 7 min, reste ~42 min  <- record
+      « "Il était une fois arrivé. Il était à nouveau en face de la maison.\nIl s'en voulait de la pizzer l'intérieur des filets jaunes.\n- Il a été ce soir, dit la vie, c'était un peu" »
+  étape   3500 : train 3.399  val 3.532 (perplexité 34)  | 9 min, reste ~40 min  <- record
+      « 'Il était une fois la question à laquelle il la savait :\n- Et tu es une plaisanterie !\n- Les parents se trompent, tu devrais savoir,veillez bien, et je crois, que je vais rentrer dans les Amb' »
+  étape   4000 : train 3.342  val 3.494 (perplexité 33)  | 10 min, reste ~39 min  <- record
+      « "Il était une fois décidé de s'asseoir, et elle l'entendit, et, dans le sillage d'anglein, elle se remit sur le petit salon, l'interrompit.\nLe sourire d'Holden tourna la" »
+  étape   4500 : train 3.311  val 3.455 (perplexité 32)  | 11 min, reste ~38 min  <- record
+      « "Il était une fois couvert d'humain. Mais il n'aurait pas dormi que tu voudrais faire. Un matin, je l'ai réagi à aller. Je suis consciente qu'aujourd'hui. C'est aussi est" »
+  étape   5000 : train 3.274  val 3.431 (perplexité 31)  | 12 min, reste ~37 min  <- record
+      « "Il était une fois ouvert, mais je ne pouvais la savoir plus.\n-Pourquoi Darius, nous sommes tous deux libres, et quelqu'un ne l'a pas fait. Quelqu'un avait imprimé dans le fond..." »
+  étape   5500 : train 3.250  val 3.402 (perplexité 30)  | 13 min, reste ~35 min  <- record
+      « "Il était une fois devenu une belle femme qui leur affectionnait de la peine. Jason avait eu du mal à apprendre pendant des semaines.\n- Quand on leur avait dit. Si tu le crois, c'était à leurs fins, il avait" »
+^[[A^[[B^C
+  interrompu (Ctrl-C) : on sauve l'état courant.
+
+ÉTAPE 3 — bilan
+  meilleure validation : 3.402 (perplexité 30), contre 8.44 au hasard
+  checkpoints : livres_P2_d384_meilleur.pt, livres_P2_d384_dernier.pt (dans models/checkpoints/)
+  courbe : logs/entrainement_livres_P2_d384.csv

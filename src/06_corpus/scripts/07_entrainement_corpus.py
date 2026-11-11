@@ -77,16 +77,17 @@ from gpt_torch import GPT, perte  # noqa: E402
 
 # --- réglages (une seule variable à la fois quand on compare des expériences) ---
 N_FUSIONS = 4000
-D, N_TETES, N_BLOCS, T = 384, 6, 6, 256  # expérience A : modèle plus gros, à partir de B (T = 256)
+D, N_TETES, N_BLOCS, T = 384, 6, 8, 256  # comme P4 (8 blocs)
 TAILLE_BATCH = 32  # comme la référence : 8 192 tokens par étape avec T = 256, donc 2,5 passages
 N_ETAPES = 20_000
-LR_MAX, LR_MIN, WARMUP = 6e-4, 6e-5, 300  # un modèle plus gros supporte un pas plus petit
+LR_MAX, LR_MIN, WARMUP = 6e-4, 6e-5, 300  # comme A
 INTERVALLE_MESURE = 500
 MAX_MINUTES = None
 REPRENDRE = False  # True : repart de {NOM}_dernier.pt
 GRAINE = 0
-DONNEES_TRAIN = "train_v2"  # "train_v2" : texte filtré de l'expérience D (leçons 11 et 12) ; la validation ne change pas
-NOM = "livres_D_filtre"  # préfixe des fichiers écrits ; chaque expérience a le sien (la référence : "livres")
+DONNEES_TRAIN = "train_theatre"  # "train" : livres seuls ; "train_v2" : texte filtré de D (leçons 11-12) ; "train_theatre" : livres + théâtre (leçons 16-17)
+DONNEES_DIALOGUES = "theatre_validation"  # None : pas de seconde mesure ; sinon une perte de plus, sur ces dialogues jamais appris (leçon 17)
+NOM = "livres_P4_theatre"  # préfixe des fichiers écrits ; chaque expérience a le sien (la référence : "livres")
 
 appareil = "cuda" if torch.cuda.is_available() else "cpu"
 torch.manual_seed(GRAINE)
@@ -94,6 +95,7 @@ rng = np.random.default_rng(GRAINE)
 
 bpe = BPE.charger(DOSSIER_TOKENISE / f"bpe_{N_FUSIONS}.json")
 entrainement, validation = charger_bin(DONNEES_TRAIN), charger_bin("validation")
+dialogues = charger_bin(DONNEES_DIALOGUES) if DONNEES_DIALOGUES else None
 config = dict(taille_vocab=bpe.taille, d=D, n_tetes=N_TETES, n_blocs=N_BLOCS, T_max=T)
 modele = GPT(**config).to(appareil)
 optimiseur = torch.optim.AdamW(modele.parameters(), lr=LR_MAX, weight_decay=0.1)
@@ -103,7 +105,9 @@ chemin_dernier = DOSSIER_CHECKPOINTS / f"{NOM}_dernier.pt"
 print("ÉTAPE 1 — le modèle")
 print(f"  appareil : {appareil}" + (f" ({torch.cuda.get_device_name(0)})" if appareil == "cuda" else ""))
 print(f"  {modele.nb_parametres():,} paramètres (dont {2 * bpe.taille * D:,} dans les embeddings)")
-print(f"  {len(entrainement):,} tokens d'entraînement, {len(validation):,} de validation")
+print(f"  {len(entrainement):,} tokens d'entraînement ({DONNEES_TRAIN}), {len(validation):,} de validation")
+if dialogues is not None:
+    print(f"  + {len(dialogues):,} tokens de dialogues de validation ({DONNEES_DIALOGUES}), mesurés à part")
 print(f"  perte d'un modèle au hasard : ln({bpe.taille}) = {math.log(bpe.taille):.2f}")
 tokens_par_etape = TAILLE_BATCH * T
 print(f"  {tokens_par_etape:,} tokens par étape -> {N_ETAPES * tokens_par_etape / len(entrainement):.2f} passage(s) sur le corpus")
@@ -126,11 +130,12 @@ def taux(etape):
     return LR_MIN + 0.5 * (LR_MAX - LR_MIN) * (1 + math.cos(math.pi * progres))
 
 
-def perte_validation(n_batchs=40):
+def perte_validation(n_batchs=40, donnees=None):
+    donnees = validation if donnees is None else donnees
     gen = np.random.default_rng(123)  # mêmes fenêtres à chaque mesure : courbes comparables
     modele.eval()
     with torch.no_grad():
-        total = sum(perte(modele, *tirer_batch(validation, TAILLE_BATCH, T, gen, appareil)).item()
+        total = sum(perte(modele, *tirer_batch(donnees, TAILLE_BATCH, T, gen, appareil)).item()
                     for _ in range(n_batchs))
     modele.train()
     return total / n_batchs
@@ -152,7 +157,7 @@ DOSSIER_LOGS.mkdir(exist_ok=True)
 journal = open(DOSSIER_LOGS / f"entrainement_{NOM}.csv", "a" if REPRENDRE else "w", newline="")
 ecrivain = csv.writer(journal)
 if not REPRENDRE:
-    ecrivain.writerow(["etape", "perte_train", "perte_val", "taux"])
+    ecrivain.writerow(["etape", "perte_train", "perte_val", "taux"] + (["perte_dialogues"] if dialogues is not None else []))
 
 debut_temps = time.time()
 somme, compte = 0.0, 0
@@ -179,9 +184,11 @@ try:
             if pv < meilleure:
                 meilleure, marque = pv, "  <- record"
                 sauver(chemin_meilleur, modele, config, etape, pv, optimiseur)
-            ecrivain.writerow([etape, f"{pt:.4f}", f"{pv:.4f}", f"{taux(etape):.6f}"])
+            pd = perte_validation(donnees=dialogues) if dialogues is not None else None
+            ecrivain.writerow([etape, f"{pt:.4f}", f"{pv:.4f}", f"{taux(etape):.6f}"] + ([f"{pd:.4f}"] if pd is not None else []))
             journal.flush()
-            print(f"  étape {etape:>6} : train {pt:.3f}  val {pv:.3f} (perplexité {math.exp(pv):.0f})"
+            texte_dialogues = f"  dialogues {pd:.3f}" if pd is not None else ""
+            print(f"  étape {etape:>6} : train {pt:.3f}  val {pv:.3f} (perplexité {math.exp(pv):.0f}){texte_dialogues}"
                   f"  | {ecoule / 60:.0f} min, reste ~{restant / 60:.0f} min{marque}")
             print(f"      « {echantillon()!r} »")
             if fin:

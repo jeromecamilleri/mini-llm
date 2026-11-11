@@ -22,6 +22,9 @@ Transformer les livres Kindle (`datasets/originals/`) en texte propre, prêt à 
 | 12 | tokeniser le texte filtré (`train_v2.bin`) | fait |
 | 13 | ce que le modèle a mis dans ses embeddings (cosinus, voisins, ACP) | fait |
 | 14 | A et D sur une validation filtrée (le test était-il équitable ?) | fait |
+| 15 | Perte sur toute la validation, fenêtre glissante, bits par octet | fait |
+| 16 | Nettoyer le théâtre importé (Claire, TheatreGratuit) : format, didascalies, texte déformé | fait |
+| 17 | Tokeniser le théâtre, réserver des dialogues de validation | fait |
 
 Pas à pas complet du corpus : [`docs/howto_corpus_353_livres.md`](../../docs/howto_corpus_353_livres.md).
 

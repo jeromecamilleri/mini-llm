@@ -9,6 +9,7 @@ datasets/extracted/*
 datasets/cleaned/*
 datasets/cleaned_v2/*
 datasets/tokenized/*
+datasets/claire/*
 datasets/metadata.csv
 datasets/a_verifier.csv
 datasets/exclusions.txt

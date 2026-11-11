@@ -1,6 +1,9 @@
 """06_corpus — Leçon 10 : parler au modèle (chat simplifié) et comprendre entraînement / utilisation.
 
-    .venv/bin/python src/06_corpus/scripts/10_chat.py
+    .venv/bin/python src/06_corpus/scripts/10_chat.py [fichier.pt]
+
+Sans argument, le chat charge CHECKPOINT (D) (réglage ci-dessous). Pour un essai à la main
+sur un autre modèle (ex. P1) : ... 10_chat.py livres_P1_6blocs_meilleur.pt
 
 DEUX ÉTAPES DIFFÉRENTES, MÊME MODÈLE
                       ENTRAÎNEMENT (leçon 7)           UTILISATION (ici)
@@ -69,12 +72,14 @@ from gpt_torch import GPT  # noqa: E402
 
 # --- réglages de départ (modifiables avec les commandes) ---
 N_FUSIONS = 4000
-CHECKPOINT = "livres_A_d384_meilleur.pt"  # précédents : "livres_T256_meilleur.pt" (B), "livres_meilleur.pt" (référence)
+CHECKPOINT = "livres_D_filtre_meilleur.pt"  # précédents : "livres_A_d384_meilleur.pt" (A), "livres_T256_meilleur.pt" (B), "livres_meilleur.pt" (référence)
 APPAREIL = "cpu"  # "cuda" pour utiliser le GPU : comparer le temps affiché après chaque réponse
 temperature, top_k, top_p, longueur = 0.8, 40, None, 80
 mode = "chat"
 
 bpe = BPE.charger(DOSSIER_TOKENISE / f"bpe_{N_FUSIONS}.json")
+if len(sys.argv) > 1:
+    CHECKPOINT = sys.argv[1]  # essai à la main : nom d'un fichier de models/checkpoints/
 contenu = torch.load(DOSSIER_CHECKPOINTS / CHECKPOINT, map_location=APPAREIL)
 modele = GPT(**contenu["config"]).to(APPAREIL)
 modele.load_state_dict(contenu["poids"])

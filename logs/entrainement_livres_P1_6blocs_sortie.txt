@@ -1,0 +1,78 @@
+camillej@CamUbuntu:/dataSSD/travailJerome/mini-llm$ .venv/bin/python src/06_corpus/scripts/07_entrainement_corpus.py
+ÉTAPE 1 — le modèle
+  appareil : cuda (NVIDIA GeForce GTX 1070)
+  7,165,952 paramètres (dont 2,361,344 dans les embeddings)
+  66,216,164 tokens d'entraînement, 3,046,367 de validation
+  perte d'un modèle au hasard : ln(4612) = 8.44
+  8,192 tokens par étape -> 2.47 passage(s) sur le corpus
+
+ÉTAPE 2 — entraînement
+  étape    500 : train 5.694  val 4.711 (perplexité 111)  | 1 min, reste ~40 min  <- record
+      « 'Il était une fois.\n- Moi.\n- Celavière. Tu vois.\n-\u2002\ufeff\n- Cette fois, je pourrais que on ne pouvais pas..... », dit.\n- Il ne voulais vous ai dit- Il' »
+  étape   1000 : train 4.314  val 4.182 (perplexité 66)  | 2 min, reste ~40 min  <- record
+      « "Il était une fois, et bien sûr de dégageaient qui s'étaillir. Je le pouvais.\n- Leah, dit Purcell, dans le bro ! Je me suis demandé, puis se balayer. C'est pas" »
+  étape   1500 : train 3.930  val 3.941 (perplexité 51)  | 3 min, reste ~39 min  <- record
+      « 'Il était une fois, et par la jungle.\nEn face à mon côté, elle avait été inutile de penser à son crâne. Miche, une fois que le séparant, un coup de fours alarmement, encore en train' »
+  étape   2000 : train 3.721  val 3.809 (perplexité 45)  | 4 min, reste ~38 min  <- record
+      « "Il était une fois impressionnant de la mère et, il ne pouvait pas en connaître. C'est tout, qui avait un peu de bonne santé. Plus que, un jour, là, au boulevard, à me dire, tout clair, l'" »
+  étape   2500 : train 3.605  val 3.712 (perplexité 41)  | 5 min, reste ~37 min  <- record
+      « "Il était une fois à cause de ce qui vivait le 100 heures, Anthony me tira sur les fusels d'une série de élèves médicales et plus rapide que de ma part. Je le tiens, quand je m'all" »
+  étape   3000 : train 3.523  val 3.653 (perplexité 39)  | 6 min, reste ~36 min  <- record
+      « "Il était une fois qu'il était à l'entrée de la maison.\nIl s'en voulait comme un père.\n- Il y a certes, mais je ne sais pas où...\n- C'est une cigarette qu" »
+  étape   3500 : train 3.469  val 3.596 (perplexité 36)  | 7 min, reste ~35 min  <- record
+      « "Il était une fois la question à celle de la guerre.\nUn ami du monde se trouvait encore avant que la langue n'avait toujours un effet préjudiqué. Unveur ne n'eût pas été fait dans les besoins qu'une" »
+  étape   4000 : train 3.410  val 3.554 (perplexité 35)  | 8 min, reste ~33 min  <- record
+      « "Il était une fois dans la pièce. Mais pourquoi pas de son corps était tranquillement, ce qui n'était pas trop près d'inquiéter une construction du petit salon, une fois que les hommes se souciaient d'arriver, il" »
+  étape   4500 : train 3.378  val 3.520 (perplexité 34)  | 9 min, reste ~32 min  <- record
+      « "Il était une fois couvert d'humain. Mais il n'aurait plus dorminemment presque réussi à s'écouter. En effet, cette fois, il n'y avait rien à attendre.\nLe policier continuait de remonter vers" »
+  étape   5000 : train 3.342  val 3.490 (perplexité 33)  | 10 min, reste ~31 min  <- record
+      « "Il était une fois ouvertsante, et il la voyait déjà bien.\nPour pouvoir regarder son appareil, il lisait le gel et s'abaissa sur la cuisses. Sa visière fils avait imprimé dans la cour, et il" »
+  étape   5500 : train 3.317  val 3.463 (perplexité 32)  | 12 min, reste ~30 min  <- record
+      « "Il était une fois capable de les faire ouvrir. Chaque année, il avait été commis ; autrement, ce jour-là, elle avait accommodé une cage. L'établissement du mal à l'avance, Mar" »
+  étape   6000 : train 3.284  val 3.442 (perplexité 31)  | 13 min, reste ~29 min  <- record
+      « "Il était une fois sur le ruisseau, tirant son pantalon.\n- Adrian... ? Je ne peux pas passer d'autres curieuses. Le cirque ne l'a pas fait. J'ai toujours" »
+  étape   6500 : train 3.262  val 3.423 (perplexité 31)  | 14 min, reste ~28 min  <- record
+      « "Il était une fois par semaine, et il y avait une fois de plus en plus que sa fille, il ne pouvait plus pas le vouloir.\nIl n'avait rien fait de mal.\nAvec une photo à la cuisine, il avait pu trouver" »
+  étape   7000 : train 3.245  val 3.403 (perplexité 30)  | 15 min, reste ~27 min  <- record
+      « "Il était une fois les chiens, puis elle avait été connectée.\n- Et puis ?\n-\n- Traitement, c'est bon...\nElle, ne répond pas à la question parce que c'est un arr" »
+  étape   7500 : train 3.225  val 3.385 (perplexité 30)  | 16 min, reste ~26 min  <- record
+      « "Il était une fois pour avoir quarante-huit ans.\n- Vous me laisserais seule chez moi, monsieur, je l'ai vue finalement passée, dit-il.\n- Bien sûr, répondit-elle.\n- Je ne serai pas venu" »
+  étape   8000 : train 3.198  val 3.371 (perplexité 29)  | 17 min, reste ~25 min  <- record
+      « "Il était une fois équipé de la jeune femme, qui n'avait jamais cessé de me rappeler aux noms et aux lettres de l'égymentation.\n2 Livre de Combien de temps plus tard, M. Weller" »
+  étape   8500 : train 3.181  val 3.350 (perplexité 28)  | 18 min, reste ~24 min  <- record
+      « "Il était une fois l'un des plus nombreux de ses réactions, et elle exprimait ce qui a eu le temps de devenir un dritique de ses préjugés. Vous êtes ce qui est arrivé, de votre richesse. " »
+  étape   9000 : train 3.162  val 3.341 (perplexité 28)  | 19 min, reste ~23 min  <- record
+      « "Il était une fois de plus, et cependant elle l'avait vu mourir dedans. La plupart des gens qui auraient pu aider le refuge de la maison étaient suspendus peu à peu et rien moins. C'était un chuintement b" »
+  étape   9500 : train 3.152  val 3.321 (perplexité 28)  | 20 min, reste ~22 min  <- record
+      « "Il était une fois sur sa botte, mais son cœur solitaire, ses cheveux sombres et son nez à la télé, il avait le temps de suivre sa bande et de l'embraser, et, avec une trentaine d'entre ses" »
+  étape  10000 : train 3.131  val 3.309 (perplexité 27)  | 21 min, reste ~21 min  <- record
+      « "Il était une fois à la maison.\nIl se trouvait une vingtaine de minutes dans la salle de séjour, pour disposer de sa chambre.\nIl n'était plus seul. Il se sentait à-t-il un peu fatigué. Il" »
+  étape  10500 : train 3.114  val 3.297 (perplexité 27)  | 22 min, reste ~20 min  <- record
+      « "Il était une fois en train de se retrouver à l'école, en train de poser des questions dans l'Arctique. Elle avait réussi à négocier tous les langues classiques, de l'évocation, mais elle avait pourtant ré" »
+  étape  11000 : train 3.104  val 3.282 (perplexité 27)  | 23 min, reste ~19 min  <- record
+      « "Il était une fois qu'il s'était déshabillée.\nIl se demanda, d'accord, pour utiliser le coupable, et leurs parents pouvaient réussir à partir pour le faire.\nGanni Miller s'était mis à" »
+  étape  11500 : train 3.089  val 3.272 (perplexité 26)  | 24 min, reste ~18 min  <- record
+      « "Il était une fois, deux montagnes venues en haut, et nous mangeâmes de vue. Un grand petit barband grâces, et elle vit que nous allions dans l'eau qui coule depuis le percussion ;" »
+  étape  12000 : train 3.077  val 3.258 (perplexité 26)  | 25 min, reste ~17 min  <- record
+      « "Il était une fois surpris. Il hocha la tête, compressé par une extase à l'autre. Il traversa l'espace sur un panneau de contrôle et essaya de la soulever. Il y eut le dernier panneau ex" »
+  étape  12500 : train 3.063  val 3.251 (perplexité 26)  | 26 min, reste ~16 min  <- record
+      « "Il était une fois à faire de tout ce qui la surprit.\n- Valéryial, vous avez besoin d'une possibilité ? demanda Marsalis.\n- J'avais besoin d'une situation. Le Rossinante" »
+  étape  13000 : train 3.050  val 3.237 (perplexité 25)  | 27 min, reste ~15 min  <- record
+      « "Il était une fois rentrée, mais qu'il n'avait pas encore la moindre idée de vouloir se cacher.\nTu vois ce que je crois pas, il la regarda en tout.\nLa femme qui avait le plus grand sourire. Une émotion" »
+  étape  13500 : train 3.035  val 3.226 (perplexité 25)  | 28 min, reste ~14 min  <- record
+      « "Il était une fois sans doute à la base de l'unité de deux autres, la situation cessait de rebondir sur une bande, jusqu'à ce que ces deux compagnons deviennent tout à fait appliqués par l'un dessi" »
+  étape  14000 : train 3.030  val 3.218 (perplexité 25)  | 29 min, reste ~13 min  <- record
+      « "Il était une fois très connue. Le docteur Basnaaïd avait réussi à s'y habituer. Il n'avait pas fait connaissance avec cette classe le plus et sachant qu'il n'était pas présents dans le commandement des" »
+  étape  14500 : train 3.016  val 3.210 (perplexité 25)  | 30 min, reste ~11 min  <- record
+      « "Il était une fois bien plus inquiétée, mais elle continuait de bondir.\n- Qu'est-ce qu'ils ont dit ? demanda Huttunen.\n- Je n'ai jamais dit ce que je pensais," »
+  étape  15000 : train 3.006  val 3.200 (perplexité 25)  | 31 min, reste ~10 min  <- record
+      « "Il était une fois revenu, je ne voulais pas que ce soit de l'amour. Il ne voulut pas le revoir ni le regarder, ni même son sentiment, mais je sais qu'il y était la nuit précédente d'une heure.\nM" »
+  étape  15500 : train 3.002  val 3.193 (perplexité 24)  | 32 min, reste ~9 min  <- record
+      « "Il était une fois, un jour il était venu chez lui pour publier son premier jour de mai. D'une voix, il était gêné par son propre rêve, bien qu'il nât à son emplacement sous son nom. Il avait eu des" »
+^C
+  interrompu (Ctrl-C) : on sauve l'état courant.
+
+ÉTAPE 3 — bilan
+  meilleure validation : 3.193 (perplexité 24), contre 8.44 au hasard
+  checkpoints : livres_P1_6blocs_meilleur.pt, livres_P1_6blocs_dernier.pt (dans models/checkpoints/)
+  courbe : logs/entrainement_livres_P1_6blocs.csv
