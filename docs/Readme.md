@@ -10,6 +10,11 @@ GTX 1070\
 
 ------------------------------------------------------------------------
 
+**Où se situe ce projet ?** Les réseaux de neurones (MLP, puis Transformer) sont une branche de l'apprentissage automatique. Carte des familles d'algorithmes (image externe, non reproduite par nous) :
+
+![Machine Learning Algorithms](../img/FB_IMG_1794340185551.jpg)
+
+
 ## 1. Présentation du projet
 
 L'objectif est de construire progressivement un petit modèle de langage
@@ -39,6 +44,27 @@ corpus.
 -   Conserver des expériences reproductibles et comparer les résultats.
 -   Mesurer les résultats avec des indicateurs quantitatifs et des
     exemples générés.
+
+### Pourquoi un GPT est possible aujourd'hui
+
+Un GPT qui répond « pas trop mal » au mot suivant est le résultat d'un
+alignement de plusieurs avancées. Le projet en reprend chacune à petite
+échelle :
+
+| Ingrédient | Dans l'histoire | Dans ce projet |
+|---|---|---|
+| **Réseaux de neurones** | rétropropagation, Adam, et surtout l'**attention** (Transformer, 2017), qui se parallélise bien | `01_fundamentals`, puis `03_transformer` |
+| **Matériel** | les GPU font des milliers de multiplications de matrices en parallèle, ce qui rend l'entraînement possible en un temps raisonnable | la GTX 1070 (13,7 fois plus rapide que le CPU sur un gros réseau, leçon 9) |
+| **Langage en tokens** | tokenisation (BPE) et analyse de corpus immenses | `02_tokenizer`, puis les corpus dans `datasets/` |
+
+À cela s'ajoute une observation : **plus le modèle est gros, mieux il
+prédit**, à condition d'avoir aussi plus de données et plus de calcul.
+Sans cela, personne n'aurait investi dans des modèles de milliards de
+paramètres.
+
+Conséquence pour ce projet : une GTX 1070 et des corpus modestes donnent
+un modèle qui produit du français plausible, pas un assistant. C'est
+précisément ce que les expériences permettront de mesurer.
 
 ------------------------------------------------------------------------
 
@@ -112,11 +138,11 @@ Le laboratoire sera regroupé sous `/dataSSD/travailJerome/mini-llm`.
 │   └── final/           # Modèles retenus
 │
 ├── src/
-│   ├── fundamentals/    # Neurones et réseaux simples
-│   ├── tokenizer/       # Tokenisation
-│   ├── transformer/    # Attention et architecture GPT
-│   ├── training/        # Boucles d'entraînement
-│   └── inference/       # Génération de texte
+│   ├── 01_fundamentals/ # Neurones et réseaux simples (à la main, puis PyTorch)
+│   ├── 02_tokenizer/    # Tokenisation, embeddings, séquences
+│   ├── 03_transformer/  # Attention et architecture GPT
+│   ├── 04_training/     # Boucles d'entraînement
+│   └── 05_inference/    # Génération de texte
 │
 ├── notebooks/           # Explorations et visualisations
 ├── logs/                # Journaux d'exécution
@@ -126,7 +152,7 @@ Le laboratoire sera regroupé sous `/dataSSD/travailJerome/mini-llm`.
 Création de l'arborescence :
 
 ``` bash
-mkdir -p /dataSSD/travailJerome/mini-llm/{datasets/{originals,extracted,cleaned,tokenized},experiments/{french,technical,mixed,comparisons},models/{checkpoints,final},src/{fundamentals,tokenizer,transformer,training,inference},notebooks,logs,docs}
+mkdir -p /dataSSD/travailJerome/mini-llm/{datasets/{originals,extracted,cleaned,tokenized},experiments/{french,technical,mixed,comparisons},models/{checkpoints,final},src/{01_fundamentals,02_tokenizer,03_transformer,04_training,05_inference},notebooks,logs,docs}
 ```
 
 Puis :
@@ -145,6 +171,12 @@ Les fichiers sources ne doivent jamais être modifiés directement. Les
 Le parcours est organisé en sept laboratoires successifs. Chaque étape
 doit produire du code exécutable, des observations et une courte
 documentation.
+
+Correspondance avec les dossiers de `src/` : laboratoires 1 et 2 →
+`01_fundamentals`, laboratoire 3 → `02_tokenizer`, laboratoire 4 →
+`03_transformer`, laboratoire 6 → `04_training`, laboratoire 7 →
+`05_inference` (le laboratoire 5, la préparation des corpus, travaille
+dans `datasets/`).
 
 ### Laboratoire 1 --- Fondamentaux du Deep Learning
 
@@ -175,11 +207,10 @@ Travail pratique :
 Fichiers envisagés :
 
 ``` text
-src/fundamentals/
-├── perceptron.py
-├── activations.py
-├── forward.py
-└── backpropagation.py
+src/01_fundamentals/
+├── tools/   (perceptron.py, activations.py, forward.py, backpropagation.py, optimiseurs.py)
+├── scripts/   (a_la_main/ puis pytorch/)
+└── fiches/
 ```
 
 **Résultat attendu :** comprendre comment une erreur de prédiction est
@@ -241,7 +272,7 @@ comparer les résultats.
 Fichiers envisagés :
 
 ``` text
-src/tokenizer/
+src/02_tokenizer/
 ├── vocabulary.py
 ├── tokenizer_basic.py
 └── bpe.py
@@ -284,7 +315,7 @@ Travail pratique :
 Fichiers envisagés :
 
 ``` text
-src/transformer/
+src/03_transformer/
 ├── embeddings.py
 ├── attention.py
 ├── transformer_block.py

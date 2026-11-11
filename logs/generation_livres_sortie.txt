@@ -1,0 +1,59 @@
+camillej@CamUbuntu:/dataSSD/travailJerome/mini-llm$ .venv/bin/python src/06_corpus/cours/08_generation_corpus.py
+ÉTAPE 1 — charger le modèle
+  livres_meilleur.pt : étape 20000, perte de validation 3.321
+
+ÉTAPE 2 — un début, plusieurs réglages
+  début : 'Il était une fois', graine 0, 120 tokens
+
+  température 0.3, top_k None, top_p None
+  Il était une fois de plus, et il n'avait pas le temps de le faire.
+  Il s'était rendu compte qu'il était en train de se faire entendre.
+  - Je ne crois pas que vous êtes là, dit-il.
+  - Je ne sais pas.
+  - Je ne sais pas.
+  - Je ne sais pas.
+  - Je ne sais pas.
+  - Je ne sais pas.
+  - Je ne sais pas.
+  - Je ne sais pas.
+  - Je sais.
+  - Je suis un peu plus.
+  - Je ne sais pas.
+  - Je
+
+  température 0.8, top_k None, top_p None
+  Il était une fois une femme qui semblait lui parler de son écrasement.
+  « Dis-moi ce que, toi,
+  Postrick ne t'a pas dit, dit Robin. Je veux te demander des conseils », dit le chef d'état de son index, mais il veut vivre. Et elle a aussi écrit qu'elle n'ait fait aucun mal de tête. « Ta mère est droit à moi », dit-il, qui a fait belle à ma mère de cette femme et son mari. On se dirige vers le père de
+
+  température 1.2, top_k None, top_p None
+  Il était une fois mois !... n'êtes-tu qu'ailleurs que votre maître lui va depuis, fermer un cadavre autour de moi parce que votre fils, ses bien avant la future ?
+  - Vous êtes donc mort, concède tout aussi survavant où ils touchent nos menottes, me défav chacun à Springs Marcelle, et qui continue de s'introduire tous comme droit maître. Mais si je ne le veuille désire faire bellement parler, a-t-on laissé ton conseil, l'article
+
+  température 0.8, top_k 40, top_p None
+  Il était une fois une femme qui semblait lui parler de son père, et qu'elle essayait.
+  J'avais un peu de chance. J'avais toujours cru que son père était dans le but de se mettre à la suite de me mettre à l'aise. Il avait honte de me mettre chez moi, même si je n'avais pas d'argent pour un ami. De plus, il aurait bien réussi à me trouver un bon père comme cela, je ne le sais pas, j'étais à moi, je me disais que j'avais une petite fille et bien l'intention
+
+  température 0.8, top_k None, top_p 0.9
+  Il était une fois une femme qui semblait lui parler de son père, et qu'elle lui avait donné la parole. C'était un moment très simple. J'ai dit que je n'avais pas la parole. »
+  Il avait oublié la mort de l'Ouest. Les filles du vieux, la fillette, les filles, les filles, l'ombre des chaussures, et qui étaient au-dessus de leurs parents, comme si j'étais sous la forme de leurs enfants, à leur belle habitude, de cette femme et de la folie, à l'église
+
+ÉTAPE 3 — plusieurs débuts (température 0.8, top_p 0.9)
+
+  début : 'Il était une fois'
+  Il était une fois une femme qui semblait lui parler de son père, et qu'elle lui avait donné la parole. C'était un moment très simple. J'ai dit que je n'avais pas la parole. »
+  Il avait oublié la mort de l'Ouest. Les filles du vieux, la fillette, les filles, les filles, l'ombre des chaussures, et qui étaient au-dessus de leurs parents, comme si j'étais sous la forme de leurs enfants, à leur belle habitude, de cette femme et de la folie, à l'église
+
+  début : "- Qu'est-ce que tu fais ? demanda-t-il.\n-"
+  - Qu'est-ce que tu fais ? demanda-t-il.
+  - Oh !... Je ne suis pas prête, toi.
+  - Je ne te crois pas.
+  - Alors, qu'est-ce qui se passe dans le but ?
+  - La seconde fois ! »
+  C'était la première fois qu'il se trouvait au travers du sas du couloir.
+  « Mais, par contre, j'ai pas de raison. »
+  Puis il ajouta, que des images tournent, les récepteurs, tout à coup, de cette manière, de s'approcher, de siffler
+
+  début : 'La nuit tombait sur la ville'
+  La nuit tombait sur la ville et les semaines.
+  Elle n'arrivait pas à le maintenir, mais la maison était une ferveur orientale. J'ai même dit que c'était un jour d'avance, et je crois que c'était de la bière. Les filles n'étaient pas encore venues. J'ai compris que je n'avais jamais eu une idée qui ne se situe pas. Elles avaient fait ça. Elles étaient des câbles, des pierres et des calomnies. Elles avaient l'air bien plus si famil

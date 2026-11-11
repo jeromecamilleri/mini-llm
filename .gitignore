@@ -2,3 +2,16 @@
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# Données et modèles générés : jamais dans git (livres sous droit d'auteur, fichiers lourds)
+datasets/originals/*
+datasets/extracted/*
+datasets/cleaned/*
+datasets/tokenized/*
+datasets/metadata.csv
+datasets/a_verifier.csv
+datasets/exclusions.txt
+models/checkpoints/*
+models/final/*
+!datasets/*/.gitkeep
+!models/*/.gitkeep

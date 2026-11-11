@@ -1,0 +1,28 @@
+ÉTAPE 1 — la table : 4612 tokens × 256 nombres (livres_T256_meilleur.pt)
+  cosinus moyen entre deux tokens au hasard : +0.001 (écart 0.065)
+
+ÉTAPE 2 — les 6 plus proches voisins (cosinus)
+  ' chat' : découpé en plusieurs tokens, ignoré
+  ' chien'   -> ' o' 0.22, ' pai' 0.20, ' madame' 0.20, 'ʹ' 0.20, 'ière' 0.20, ' cheveux' 0.19
+  ' homme'   -> ' femmes' 0.28, ' hommes' 0.24, 'adis' 0.23, ' visage' 0.21, 'igine' 0.21, ' grande' 0.20
+  ' femme'   -> 'mêmes' 0.22, ' vous' 0.22, ' femmes' 0.22, 'rice' 0.21, 'ř' 0.21, ' veut' 0.21
+  ' roi'     -> ' ainsi' 0.21, ' monsieur' 0.21, 'r' 0.20, ' Cor' 0.20, 'riers' 0.20, ' maître' 0.20
+  ' reine' : découpé en plusieurs tokens, ignoré
+  ' père'    -> ' française' 0.29, ' regarde' 0.25, ' amis' 0.25, 'о' 0.23, ' enfants' 0.23, ' Alors' 0.22
+  ' mère'    -> ' Jo' 0.25, ' âme' 0.25, ' fille' 0.25, 'rice' 0.25, ' mémoire' 0.24, 'ade' 0.24
+  ' nuit'    -> ' jour' 0.26, 'ħ' 0.24, 'ôme' 0.22, ' minutes' 0.21, 'D' 0.21, ' partout' 0.20
+  ' jour'    -> ' nuit' 0.26, 'sions' 0.23, 'ientôt' 0.23, 'uir' 0.21, ' soir' 0.20, ' savez' 0.19
+  ' triste'  -> ' étrange' 0.28, ' extrême' 0.22, ' sombre' 0.20, ' pauvre' 0.20, ' long' 0.20, ' dî' 0.18
+  ' heureux' -> ' Oui' 0.23, 'ᶆ' 0.22, ' rues' 0.21, 'érable' 0.21, '가' 0.20, ' différentes' 0.20
+  ' rouge'   -> ' soleil' 0.26, ' arbres' 0.24, 'oute' 0.23, ' calme' 0.23, 'oiles' 0.22, ' verre' 0.21
+  ' bleu'    -> ' bruit' 0.21, ' Là' 0.21, 'cée' 0.20, 'int' 0.20, ' cel' 0.19, ' épaules' 0.19
+  '1'        -> '3' 0.30, ' 1' 0.27, '6' 0.25, '0' 0.25, ' York' 0.21, 'ative' 0.20
+  '2'        -> '3' 0.31, '4' 0.30, '5' 0.27, '25' 0.24, '6' 0.24, '23' 0.22
+
+ÉTAPE 3 — analogie : roi - homme + femme = ?
+  plus proches : 'ń' 0.25, ' DE' 0.21, ' médecin' 0.20, 'aule' 0.20, ' Lou' 0.20
+  (un petit modèle de 5 millions de paramètres réussit rarement : c'est instructif)
+
+ÉTAPE 4 — ACP à la main sur les 150 tokens les plus fréquents
+  les 2 axes retenus gardent 4% de la variation totale
+  figure : logs/embeddings_acp.png
