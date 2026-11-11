@@ -1,0 +1,21 @@
+ÉTAPE 1 — validation filtrée (mêmes 17 livres, texte de cleaned_v2)
+  validation non filtrée : 3,046,367 tokens
+  validation filtrée : 3,008,826 tokens
+  retirés par le filtre : 37,541 tokens (1.23 %)
+
+ÉTAPE 2 — perte de chaque modèle sur chaque validation (CPU)
+  livres_A_d384_meilleur.pt        validation non filtrée  : 3.0556  (28 s)
+  livres_A_d384_meilleur.pt        validation filtrée      : 3.0794  (28 s)
+    (checkpoint à l'étape 20000)
+  livres_D_filtre_meilleur.pt      validation non filtrée  : 3.0931  (28 s)
+  livres_D_filtre_meilleur.pt      validation filtrée      : 3.0777  (28 s)
+    (checkpoint à l'étape 20000)
+
+ÉTAPE 3 — bilan
+  écart D - A (positif = D moins bon ; à lire seulement quand D est terminé, à 20 000 étapes comme A) :
+    validation non filtrée  : D - A = +0.0376
+    validation filtrée      : D - A = -0.0017
+  effet du bruit sur chaque modèle : perte non filtrée - perte filtrée (valable à toute étape) :
+    livres_A_d384_meilleur.pt        : -0.0238
+    livres_D_filtre_meilleur.pt      : +0.0155
+  si A est plus bas sur la non filtrée (signe -) et D plus haut (signe +), le bruit avantage bien A.

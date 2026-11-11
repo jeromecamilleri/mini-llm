@@ -253,24 +253,25 @@ Sortie complète du script, sans modification : `logs/entrainement_livres_sortie
 - Textes de la fin : dialogues et récit plausibles phrase par phrase (« Il a baissé les yeux vers eux. - Ne m'avez pas fallu. »), mais sans fil ; encore quelques mots inventés (« humestrée », « Helitticus », « la mercie »). Un échantillon (étape 8000) recopie un fragment de table des matières (« 2273-Oastronomie........ ») : les mentions de mise en page restent dans le corpus.
 - Les caractères étranges venaient surtout de ces mots inventés et de caractères rares du vocabulaire (611 caractères) ; à tester seul : réduire les caractères rares ou nettoyer plus.
 
-## Où j'en suis (10 novembre 2026, fin de journée) et pour reprendre
+## Où j'en suis (11 novembre 2026) et pour reprendre
 
-Fait et lancé : étapes 1 à 8 (346 livres, BPE de 4 612 tokens, `train.bin` de 66 M de tokens, validation sur 17 livres).
+Fait : étapes 1 à 11 (346 livres, BPE de 4 612 tokens, `train.bin` de 66 M de tokens, validation sur 17 livres), leçons 1 à 13.
 
-Étape 9 terminée (`07_entrainement_corpus.py`, 20 000 étapes, 14 minutes sur la GTX 1070) : validation finale 3,321 (perplexité 28) contre 8,44 au hasard. Sortie complète dans `logs/entrainement_livres_sortie.txt`. Le GPU n'utilisait que 1,4 Go sur 8,6 Go : de la marge pour un modèle plus gros.
+Résultats (détail dans [`suivi_experiences_corpus.md`](suivi_experiences_corpus.md)) :
 
-Étape 10 : leçons 8 (génération), 9 (courbe) et 10 (chat) écrites et lancées. Sorties : `logs/generation_livres_sortie.txt`, `logs/courbe_entrainement_livres.png`. Fiches `08`, `09`, `10` écrites, README à jour.
+| Essai | Validation | Perplexité | Durée |
+|---|---|---|---|
+| 0 référence (d 256, T 128) | 3,321 | 28 | 14 min |
+| B : T = 256 | 3,227 | 25 | 30 min |
+| A : d 384, 6 blocs | **3,068** | **21** | 74 min |
+| D : texte filtré (`train_v2`) | 3,106 (3,078 sur validation filtrée, égal à A) | 22 | 74 min |
 
-Dernières décisions du 10 novembre :
-- Le chat (`10_chat.py`) tourne sur le CPU par défaut : réglage `APPAREIL = "cpu"` ou `"cuda"` en tête du script. Les deux fonctionnent (test : environ 0,1 s sur CPU, 0,3 s sur GPU pour la première réponse, à cause du démarrage du GPU) ; pour un si petit modèle le GPU n'accélère pas. `scores_suivant` de `05_inference/tools/generation.py` utilise maintenant l'appareil du modèle.
-- Le chat répond « n'importe quoi » : normal, le modèle ne sait que continuer des romans. Un vrai assistant demanderait un second entraînement sur des paires question → réponse.
+- Chapitre `06_corpus` : leçons 11 (filtrage), 12 (tokenisation filtrée), 13 (embeddings). Les dossiers `cours/` et `exercices/` s'appellent maintenant `scripts/` et `fiches/`.
+- Chat (`10_chat.py`) : sur le modèle A. Il recopie ses propres réponses : `/nouveau` ou `/memoire 0` pour l'éviter (mesures dans la fiche 10).
+- Images d'illustration : dossier `img/`.
+- Sécurité : le dossier `datasets/cleaned_v2/` (livres) avait été publié par erreur ; historique nettoyé et dépôt recréé. Tout dossier de données va dans `.gitignore` **avant** d'être créé.
 
-À faire demain :
-1. Lancer le chat avec `APPAREIL = "cuda"` et comparer les temps affichés (optionnel).
-2. Première expérience à une seule variable : modèle plus gros (d, blocs) ou contexte T plus long, avec les mêmes réglages de génération pour comparer.
-3. Autres pistes, **une seule variable à la fois** : plus d'étapes, vocabulaire du BPE (611 caractères dont beaucoup de rares), nettoyage plus poussé (pages de titre, mentions d'éditeur, tables des matières).
-4. Mettre à jour `.github/copilot-instructions.md` avec le chapitre `06_corpus` (à proposer).
-5. Rien n'est commité : relire avant de commiter (les livres, textes et `.bin` sont ignorés par git ; `logs/*.csv`, `logs/*.txt` et `logs/*.png` ne le sont pas, à décider).
+D n'apporte pas de gain mesurable (leçon 14 : le bruit de la validation expliquait l'écart). Base retenue : A. Pour reprendre : essais P1 à P3 (profondeur, largeur, têtes, séparément, voir le suivi), puis C (plus d'étapes) et E (réglages), **une seule variable à la fois**. Pour refaire A : remettre `DONNEES_TRAIN = "train"` dans `07_entrainement_corpus.py` (il est resté sur `train_v2`).
 
 Suivi des expériences (fiche technique, analyse, tableau) : [`suivi_experiences_corpus.md`](suivi_experiences_corpus.md).
 

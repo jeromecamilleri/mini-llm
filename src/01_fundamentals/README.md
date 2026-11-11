@@ -41,4 +41,4 @@ Un GPT est un réseau de neurones comme celui-ci, en beaucoup plus grand. Les m�
 
 Une page résume le chapitre : neurone, fonctions d'activation, propagation avant, perte, rétropropagation, Adam, régularisation et hyperparamètres (image externe, source MLTUT, non reproduite par nous).
 
-![Deep Learning Cheat Sheet](../../img/Image%20ChatGPT%208%20nov.%202026,%2021_18_50.jpg)
+![Deep Learning Cheat Sheet](../../img/deep_learning_cheat_sheet.jpg)

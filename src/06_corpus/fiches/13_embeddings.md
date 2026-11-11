@@ -19,7 +19,7 @@ Au hasard, deux tokens ont un cosinus moyen de **0,001** (écart 0,065) : en 256
 
 Aide-mémoire illustrant les embeddings, le cosinus et la recherche de textes proches (image extraite d'un réseau social, source MLTUT, non reproduite par nous) :
 
-![Embeddings de texte et similarité cosinus](../../../img/FB_IMG_1794343146926.jpg)
+![Embeddings de texte et similarité cosinus](../../../img/embeddings_cosinus.jpg)
 
 ## Ce qu'on observe (sortie dans `logs/embeddings_sortie.txt`)
 
@@ -42,7 +42,7 @@ Notre figure (150 tokens les plus fréquents) :
 
 Pour situer l'ACP parmi les autres méthodes (réduction de dimension : PCA, t-SNE, UMAP ; regroupement : k-means, DBSCAN), voici une carte des familles d'algorithmes (image d'un réseau social, auteure Pooja Pawar) :
 
-![Arbre des familles d'algorithmes de machine learning](../../../img/FB_IMG_1794340609661.jpg)
+![Arbre des familles d'algorithmes de machine learning](../../../img/ml_arbre_familles.jpg)
 
 ## Ce qu'on en déduit
 

@@ -1,6 +1,6 @@
 # Exercices : du texte aux nombres (caractère par caractère)
 
-Cours associé : [`../scripts/01_caracteres.py`](../../scripts/01_caracteres.py) (module : [`../tools/vocabulary.py`](../../tools/vocabulary.py))
+Cours associé : [`../scripts/01_caracteres.py`](../scripts/01_caracteres.py) (module : [`../tools/vocabulary.py`](../tools/vocabulary.py))
 
 On quitte le XOR : ici le fil rouge est un **mini-texte** écrit à la main.
 

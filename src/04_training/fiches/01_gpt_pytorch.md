@@ -61,6 +61,21 @@ Vocabulaire V = 13, d = 32, 2 têtes, 2 blocs, T = 4 : **26 432 paramètres**.
 | un pas de 0,1 dans le sens du gradient | perte 2,424 → 2,206 |
 | changer le dernier mot | les scores du passé ne bougent pas (masque causal) |
 
+## Les paramètres du réseau : largeur, profondeur, têtes
+
+Le GPT est une pile de **blocs** identiques. Chaque bloc : LayerNorm → attention → ajout de l'entrée → LayerNorm → MLP (d → 4d → d, activation GELU) → ajout de l'entrée.
+
+| Réglage | Ce que c'est | Référence | Modèle A (chapitre `06_corpus`) |
+|---|---|---|---|
+| `D` | taille du vecteur de chaque token (largeur) | 256 | 384 |
+| `N_BLOCS` | nombre de blocs empilés (profondeur) | 4 | 6 |
+| `N_TETES` | têtes d'attention par bloc | 4 | 6 |
+| neurones cachés du MLP | 4 × `D`, par bloc | 1 024 | 1 536 |
+| `T` | fenêtre de contexte | 128 | 256 |
+| Paramètres | | 5,55 M | 14,29 M |
+
+Un bloc contient 12 D² + 13 D paramètres. Les expériences qui font varier ces réglages sont suivies dans `docs/suivi_experiences_corpus.md`.
+
 ## Ce qu'on en déduit
 
 - La **même architecture** passe de NumPy à PyTorch : les scores sont identiques aux arrondis près. Seuls les gradients automatiques sont nouveaux.

@@ -24,7 +24,7 @@ Règle : **une seule variable à la fois**. Mêmes réglages de génération pou
 | 0 | référence | 5,55 M | 14 min | 3,321 (28) | 3,141 | phrases plausibles, sans fil ; boucle à T 0,3 ; déraille à T 1,2 | fait |
 | B | contexte T = 256 (reste inchangé ; batch 32 : 8 192 tokens par étape, 2,47 passages, donc deux fois plus de données vues) | 5,59 M | 30 min | 3,227 (25) | 3,045 | phrases plausibles, noms propres plus nombreux ; encore pas de fil net (à vérifier avec la leçon 8) | fait, textes à comparer |
 | A | modèle plus gros, cumulatif sur B : d = 384, 6 blocs, 6 têtes (version intermédiaire de d = 512 / 8 blocs, ~4 h) ; LR 6e-4 | 14,29 M | 74 min | 3,068 (21) | 2,842 | phrases plus soutenues, dialogues et noms propres cohérents sur quelques lignes ; encore pas de fil | fait |
-| D | texte d'entraînement filtré (leçons 11-12) : 1,93 % des caractères retirés, 64,3 M tokens ; validation inchangée | selon la base | à mesurer | | | | réglée (`livres_D_filtre`), à lancer par Jérôme ; objectif : battre 3,068 |
+| D | texte d'entraînement filtré (leçons 11-12) : 1,93 % des caractères retirés, 64,3 M tokens ; validation inchangée | 14,29 M | 74 min | 3,106 (22) sur la validation non filtrée ; **3,078 sur la validation filtrée, à égalité avec A** (3,079) | 2,871 | pas de gain mesurable ; l'écart de 0,038 avec A vient du bruit de la validation (leçon 14) | fait |
 | C | plus d'étapes (60 000) | 5,55 M | environ 45 min | | | | à faire |
 | E | réglages (taux, dropout) | 5,55 M | | | | | à faire |
 
@@ -70,6 +70,30 @@ Attention : changer T change un peu la validation ; comparer aussi les textes g�
 
 À remplir après chaque lancement : copier la sortie dans `logs/` et noter ici validation, durée et impression sur le texte.
 
+## Architecture et réglages du réseau
+
+| Réglage | Ce que c'est | Réf. | A |
+|---|---|---|---|
+| `D` | taille du vecteur de chaque token (largeur) | 256 | 384 |
+| `N_BLOCS` | blocs Transformer empilés (profondeur) | 4 | 6 |
+| `N_TETES` | têtes d'attention par bloc (`D` divisible par `N_TETES`) | 4 | 6 |
+| neurones cachés du MLP | 4 × `D`, par bloc | 1 024 | 1 536 |
+| `T` | fenêtre de contexte | 128 | 256 |
+| vocabulaire | tokens du BPE | 4 612 | 4 612 |
+| Paramètres | embeddings + blocs | 5,55 M | 14,29 M |
+
+Paramètres d'un bloc : 12 D² + 13 D (attention 4 D², MLP 8 D², plus biais et LayerNorm). Total : `N_BLOCS` × bloc + 2 × vocabulaire × D (embeddings et sortie) + T × D (positions) + 2 D (LayerNorm final). Pour A : 6 × 1 774 464 + 3 542 016 + 98 304 + 768 = 14 287 872.
+
+**Constat.** A a changé `D` (256 → 384), `N_BLOCS` (4 → 6), `N_TETES` (4 → 6) et le taux d'apprentissage en même temps : gain de 0,159, mais on ne sait pas quelle part vient de la largeur, de la profondeur ou des têtes. C'est contraire à notre règle « une seule variable à la fois », et je n'avais pas proposé de les séparer.
+
+Essais possibles pour les séparer, à partir de B (une variable chacun, environ 30 min) :
+
+| Essai | Changement | Question |
+|---|---|---|
+| P1 | `N_BLOCS` 4 → 6, le reste comme B | la profondeur aide-t-elle ? |
+| P2 | `D` 256 → 384, le reste comme B | la largeur aide-t-elle ? |
+| P3 | `N_TETES` 4 → 8, le reste comme B | combien de têtes ? |
+
 ## Registre : nom du modèle → réglages
 
 Chaque entraînement écrit aussi `models/checkpoints/{NOM}_reglages.json` (tous les réglages). Le checkpoint `.pt` contient seulement la config du réseau (d, blocs, têtes, T, vocabulaire), pas le batch ni le taux. Pour la référence, qui date d'avant ce fichier, voici ses réglages :
@@ -78,6 +102,8 @@ Chaque entraînement écrit aussi `models/checkpoints/{NOM}_reglages.json` (tous
 |---|---|---|---|---|---|---|---|---|---|---|
 | `livres` (référence) | 256 | 4 | 4 | 128 | 32 | 4 096 | 20 000 | 1e-3 → 1e-4 | 5 553 664 | 3,321 |
 | `livres_T256` (B) | 256 | 4 | 4 | 256 | 32 | 8 192 | 20 000 | 1e-3 → 1e-4 | 5 586 432 | 3,227 |
+| `livres_A_d384` (A) | 384 | 6 | 6 | 256 | 32 | 8 192 | 20 000 | 6e-4 → 6e-5 | 14 287 872 | 3,068 |
+| `livres_D_filtre` (D) | 384 | 6 | 6 | 256 | 32 | 8 192 | 20 000 | 6e-4 → 6e-5 | 14 287 872 | 3,106 (3,078 filtrée) |
 
 **TAILLE_BATCH** : nombre de fenêtres lues avant chaque correction des poids ; tokens lus par étape = batch × T. Détail dans `src/06_corpus/fiches/07_entrainement_corpus.md`.
 
@@ -89,6 +115,9 @@ Chaque expérience écrit ses propres fichiers (réglage `NOM` dans `07_entraine
 |---|---|---|
 | 0 référence | `models/checkpoints/livres_meilleur.pt` | `logs/entrainement_livres.csv` |
 | B T = 256 | `models/checkpoints/livres_T256_meilleur.pt` | `logs/entrainement_livres_T256.csv` |
+
+| A d = 384 | `models/checkpoints/livres_A_d384_meilleur.pt` | `logs/entrainement_livres_A_d384.csv` |
+| D texte filtré | `models/checkpoints/livres_D_filtre_meilleur.pt` | `logs/entrainement_livres_D_filtre.csv` |
 
 Pour utiliser un modèle : changer `CHECKPOINT` dans `08_generation_corpus.py` ou `10_chat.py` ; pour sa courbe, `CSV` dans `09_courbe_perte.py`.
 
@@ -124,6 +153,32 @@ Sortie complète : `logs/entrainement_livres_T256_sortie.txt` ; courbe : `logs/e
 - **Ce qui est retiré** : code web (`@font-face`, CSS), mentions d'édition et ISBN, codes isolés, lignes presque sans lettres, alphabets rares (136 caractères gardés sur 611).
 - **À comparer** : validation de A = 3,068 (perplexité 21), train 2,842, écart 0,226, durée 74 min. Commande : `.venv/bin/python src/06_corpus/scripts/07_entrainement_corpus.py`. Fichiers : `models/checkpoints/livres_D_filtre_{meilleur,dernier}.pt`, `logs/entrainement_livres_D_filtre.csv`.
 - Attente honnête : le bruit est faible (moins de 2 %), le gain sera petit ; l'effet visible devrait être l'absence de faux CSS et de faux ISBN dans les textes.
+
+### Expérience D : résultats (11 novembre 2026)
+
+Sortie complète : `logs/entrainement_livres_D_filtre_sortie.txt` ; courbe : `logs/entrainement_livres_D_filtre.csv` (s'arrête à l'étape 19 500 : une manipulation git a détourné le fichier, la fin a été récupérée depuis le processus ; la ligne 20 000 figure dans la sortie).
+
+| Mesure | A (`train`) | D (`train_v2`) |
+|---|---|---|
+| Tokens d'entraînement | 66 216 164 | 64 301 023 |
+| Durée | 74 min | 74 min |
+| Validation (non filtrée) | **3,068 (21)** | 3,106 (22) |
+| Train | 2,842 | 2,871 |
+
+- Sur la validation d'origine, D est moins bon de 0,038 depuis le début de l'entraînement (écart de 0,03 à 0,04 à chaque étape).
+- **Hypothèse** : la validation contient encore du bruit (1,23 % des tokens) que A a appris à prédire et pas D. Test (leçon 14, 800 fenêtres régulières, CPU, checkpoints à 20 000) :
+
+| | Validation non filtrée | Validation filtrée |
+|---|---|---|
+| A | 3,0556 | 3,0794 |
+| D | 3,0931 | 3,0777 |
+| D − A | +0,038 | **−0,002** |
+
+- Effet du bruit : −0,024 pour A (le bruit l'avantage), +0,016 pour D (il le pénalise). Somme : 0,040, soit l'écart observé. **Hypothèse confirmée.**
+- Conclusion : le filtrage ne donne **pas de gain mesurable** (écart de −0,002, dans le bruit de mesure de 800 fenêtres). Il retire du bruit sans changer la qualité du français. Le train de D est plus haut que celui de A (2,871 contre 2,842) : le code web et les ISBN retirés étaient faciles à prédire.
+- Leçon de méthode : un changement sur les données d'entraînement doit s'évaluer sur une validation qui subit **le même changement**, sinon la comparaison est biaisée. La validation de référence (non filtrée) reste utile pour comparer à 0, B et A.
+- Base retenue pour la suite : **A** (D n'apporte rien et demande une validation de plus).
+- Sorties de la leçon 14 : `logs/validation_filtree_sortie.txt`.
 
 ### Expérience A : d = 384, 6 blocs, 6 têtes, T = 256 (11 novembre 2026)
 

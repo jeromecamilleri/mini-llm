@@ -33,4 +33,4 @@ Chapitre `04_training` (un modèle entraîné et ses checkpoints : lancer d'abor
 
 Les blocs 8 et 9 (prédiction du token suivant, génération pas à pas) décrivent ce que fait ce chapitre (image externe, auteure Pooja Pawar, non reproduite par nous).
 
-![Large Language Model, vue d'ensemble](../../img/Image%20ChatGPT%208%20nov.%202026,%2021_18_15.jpg)
+![Large Language Model, vue d'ensemble](../../img/llm_vue_ensemble.jpg)

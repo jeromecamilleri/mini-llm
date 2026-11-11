@@ -46,4 +46,4 @@ Le tokenizer est la porte d'entrée de tout le reste : le modèle ne voit jamais
 
 Les blocs 2 à 4 de cette page (données, tokenisation, embeddings) correspondent à ce chapitre : le texte est découpé en tokens, chaque token devient un numéro, puis un vecteur (image externe, auteure Pooja Pawar, non reproduite par nous).
 
-![Large Language Model, vue d'ensemble](../../img/Image%20ChatGPT%208%20nov.%202026,%2021_18_15.jpg)
+![Large Language Model, vue d'ensemble](../../img/llm_vue_ensemble.jpg)

@@ -34,4 +34,4 @@ Chapitres `01_fundamentals` (boucle d'entraînement, validation, arrêt anticip�
 
 Les blocs 4 à 6 et 9 à 11 de cette page (pertes, rétropropagation, Adam, courbes d'entraînement et de validation, régularisation, hyperparamètres) résument ce chapitre (image externe, source MLTUT, non reproduite par nous).
 
-![Deep Learning Cheat Sheet](../../img/Image%20ChatGPT%208%20nov.%202026,%2021_18_50.jpg)
+![Deep Learning Cheat Sheet](../../img/deep_learning_cheat_sheet.jpg)

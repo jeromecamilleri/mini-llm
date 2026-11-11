@@ -12,7 +12,7 @@ GTX 1070\
 
 **Où se situe ce projet ?** Les réseaux de neurones (MLP, puis Transformer) sont une branche de l'apprentissage automatique. Carte des familles d'algorithmes (image externe, non reproduite par nous) :
 
-![Machine Learning Algorithms](../img/FB_IMG_1794340185551.jpg)
+![Machine Learning Algorithms](../img/ml_algorithmes.jpg)
 
 
 ## 1. Présentation du projet
@@ -127,12 +127,6 @@ Le laboratoire sera regroupé sous `/dataSSD/travailJerome/mini-llm`.
 │   ├── cleaned/         # Textes nettoyés
 │   └── tokenized/       # Corpus convertis en identifiants
 │
-├── experiments/
-│   ├── french/          # Expériences sur corpus français
-│   ├── technical/       # Expériences sur corpus technique
-│   ├── mixed/           # Corpus mixtes
-│   └── comparisons/     # Comparaisons contrôlées
-│
 ├── models/
 │   ├── checkpoints/     # États intermédiaires d'entraînement
 │   └── final/           # Modèles retenus
@@ -145,14 +139,14 @@ Le laboratoire sera regroupé sous `/dataSSD/travailJerome/mini-llm`.
 │   └── 05_inference/    # Génération de texte
 │
 ├── notebooks/           # Explorations et visualisations
-├── logs/                # Journaux d'exécution
+├── logs/                # Journaux, courbes et sorties des expériences
 └── docs/                # Documentation du projet
 ```
 
 Création de l'arborescence :
 
 ``` bash
-mkdir -p /dataSSD/travailJerome/mini-llm/{datasets/{originals,extracted,cleaned,tokenized},experiments/{french,technical,mixed,comparisons},models/{checkpoints,final},src/{01_fundamentals,02_tokenizer,03_transformer,04_training,05_inference},notebooks,logs,docs}
+mkdir -p /dataSSD/travailJerome/mini-llm/{datasets/{originals,extracted,cleaned,tokenized},models/{checkpoints,final},src/{01_fundamentals,02_tokenizer,03_transformer,04_training,05_inference},notebooks,logs,docs}
 ```
 
 Puis :

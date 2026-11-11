@@ -42,4 +42,4 @@ Chapitres `01_fundamentals` (réseaux, PyTorch) et `02_tokenizer` (texte en iden
 
 Les blocs 4 à 7 (embeddings, encodage de position, bloc Transformer, auto-attention Q/K/V) sont exactement ce qu'on construit ici (image externe, auteure Pooja Pawar, non reproduite par nous). La page « Common Architectures » du Deep Learning Cheat Sheet situe le Transformer parmi les autres réseaux ([voir le chapitre 01](../01_fundamentals/README.md)).
 
-![Large Language Model, vue d'ensemble](../../img/Image%20ChatGPT%208%20nov.%202026,%2021_18_15.jpg)
+![Large Language Model, vue d'ensemble](../../img/llm_vue_ensemble.jpg)
