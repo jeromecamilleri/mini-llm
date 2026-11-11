@@ -1,0 +1,13 @@
+camillej@CamUbuntu:/dataSSD/travailJerome/mini-llm$ .venv/bin/python src/06_corpus/scripts/15_validation_complete.py livres_P4_theatre_meilleur.pt cuda
+ÉTAPE 1 — la validation
+  validation : 3,046,367 tokens, 9,978,076 octets (0.305 token par octet)
+  appareil : cuda
+
+ÉTAPE 2 — perte de chaque modèle sur la validation (chaque token compté une fois)
+  livres_P4_theatre_meilleur.pt  T 256 (étape 20000) : perte 2.9701 (perplexité 19.5), 1.308 bit/octet  [3,046,272 tokens, 81 s]
+
+ÉTAPE 3 — bilan
+  modèle                          mesure rapide  complète   écart  bit/octet
+  livres_P4_theatre_meilleur.pt          3.0237    2.9701 -0.0535      1.308
+  mesure rapide = celle de l'entraînement (40 batchs au hasard) ; complète = toute la validation, avec contexte.
+  Un écart négatif est attendu : la fenêtre glissante donne du contexte à chaque token.
