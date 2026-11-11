@@ -7,6 +7,7 @@ __pycache__/
 datasets/originals/*
 datasets/extracted/*
 datasets/cleaned/*
+datasets/cleaned_v2/*
 datasets/tokenized/*
 datasets/metadata.csv
 datasets/a_verifier.csv
