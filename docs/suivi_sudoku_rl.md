@@ -107,6 +107,8 @@ Script `06_reinforce.py`, outil `reinforce.py`. Lot 64, Adam, GAMMA 0,99, masque
 7. **Ce que cela enseigne** : (a) une courbe qui « remonte » après un creux n'est pas forcément un retour à la normale : ici les creux étaient des signes avant-coureurs ; (b) **l'entropie est un instrument de contrôle** : sous ≈ 0,1 le réseau n'explore plus (ici, c'est tombé en dessous de 0,1 environ 80 itérations avant la mort) ; (c) un réseau qui diverge se reconnaît à des scores énormes, pas seulement à de mauvais résultats ; (d) le gradient de REINFORCE s'éteint quand le réseau est très sûr de lui, même s'il a tort.
 8. **Parades possibles (non testées)** : bonus d'entropie (essai 15 prévu, une seule variable par rapport à l'essai 14) ; borner les scores (par exemple `tanh` × constante, ou normalisation dans les blocs) ; limiter la norme du gradient ; sauvegarder le meilleur modèle (ici, il aurait suffi de l'it. ≈ 200 pour conserver un réseau à 80 % de grilles résolues) ; arrêter l'entraînement quand l'entropie passe sous un seuil.
 
+**Décision (13 nov., d'après `docs/plan_agent_sudoku_generique_sans_labels.md`)** : la mémoire des refus visible par le réseau (essais 14 et 15) est **abandonnée** : elle ajoute une information propre à l'implémentation (9 canaux) et s'écarte d'un agent générique. Les essais 14 et 15 restent consignés (premiers cas de divergence) et le code `--refus` / `--entropie` reste disponible, mais on ne le développe plus. La mémoire des refus **dans le masque** (06b, essai 9) utilise le verdict de l'oracle : on ne la retient pas comme mesure officielle ; la mesure de référence est le **tirage sans mémoire**. Prochaine étape : Phase 1 du plan (référence reproductible), puis politique factorisée 81 + 9.
+
 **Propositions contre le bruit (testées une à la fois)**
 
 | # | Idée | Effet attendu sur le bruit | Coût | Statut |
@@ -123,3 +125,77 @@ Règle de décision posée avant l'essai 8 : si A fonctionne, le bruit des coups
 - Un test qui ne bouge pas ne prouve pas que la méthode échoue : vérifier d'abord que le signal existe (essai 1) puis qu'il est du bon signe (essai 4).
 - Le retour cumulé confond la qualité du coup et sa position dans la partie : la base de comparaison doit en tenir compte. La vraie solution est la fonction de valeur (leçon 7, acteur-critique).
 - Pas encore testé (une variable à la fois) : plus d'itérations, `lr` encore plus grand (1e-2), bonus d'entropie, GAMMA plus bas, grilles complètes, autres graines.
+
+## Phase 1 du plan : référence reproductible (13 novembre 2026)
+
+Plan suivi : `docs/plan_agent_sudoku_generique_sans_labels.md` (agent générique, sans labels ni mémoire des refus). Phase 0 (audit) : constats (tête de valeur non utilisée par REINFORCE ; grilles de test dans le pool d'entraînement ; une seule graine pour les essais sur grilles complètes) faits dans la conversation, aucune modification.
+
+**Protocole (`tools/protocole.py`, `scripts/06e_reference.py`)**
+- **Jeu de test indépendant** : 512 grilles du dataset complet (200 000), 128 par difficulté, tirées hors des 1 000 grilles du pool d'entraînement (graine 12345). Identifiants : `logs/sudoku_test_ids.csv`.
+- **Définitions** : *coups* = actions jouées (refusées comprises ; une partie non résolue compte l'horizon, 150) ; *faux* = coups refusés ; *répétitions* = coups faux déjà refusés sur la même grille ; *retour* = somme des récompenses. Chaque agent joue les 512 grilles avec 4 tirages (graines d'échantillonnage 0 à 3), **sans mémoire des refus**.
+- **Référence entraînée** : essai 10 (plat, 729 actions, REINFORCE, lot 64, `lr` 3e-3 constant, GAMMA 0, grilles complètes, horizon 150, 500 it., GPU), pool d'entraînement = mini-dataset, 4 graines d'entraînement (0 à 3), noms `sudoku_reference_g0` à `g3`.
+
+**Baselines (mesurées, 512 grilles, moyenne de 4 tirages)** : `logs/sudoku_reference_baselines_sortie.txt`
+
+| Agent | Résolues | Coups | Faux | Répétitions | Retour |
+|---|---|---|---|---|---|
+| Hasard + masque | 100,0 % | 91,6 | 39,0 | 9,2 | +23,7 |
+| MRV (case à moins de chiffres légaux, chiffre au hasard) | 100,0 % | **56,1** | 3,5 | 0,5 | +59,1 |
+
+Par difficulté (coups) : hasard 85,2 / 93,2 / 94,2 / 93,7 (facile → diabolique) ; MRV 52,1 / 56,6 / 57,5 / 58,2. MRV est une référence externe, **jamais une cible d'apprentissage**. Le minimum théorique est le nombre de cases vides (≈ 50 à 53 selon la difficulté).
+
+**Lecture** : le réseau des essais 10 à 13 (≈ 77-78 coups, ≈ 27 coups faux par grille d'après 06c) est bien meilleur que le hasard (91,6) mais loin de MRV (56,1) : l'écart à combler est de ≈ 20 coups. MRV ne fait presque aucune erreur parce qu'il joue d'abord les cases à un seul chiffre légal ; c'est ce que le diagnostic 06c montrait déjà (0 % d'erreur sur les cases à un seul candidat).
+
+**Prédiction posée avant l'entraînement des 4 graines** : (1) la graine 0 retrouve l'essai 10 à quelques pour cent (mêmes réglages et même graine) ; (2) sur le test indépendant, les 4 graines donnent entre 78 et 84 coups au tirage (l'essai 10 donnait 78,4 sur des grilles du pool d'entraînement : on attend un petit écart de généralisation, pas de gain) ; (3) écart-type entre graines < 3 coups. **Résultat : mesuré** (`logs/sudoku_reference_sortie.txt`, 512 grilles, 4 tirages par checkpoint, sans mémoire).
+
+| Graine | Résolues | Coups | Faux | Répétitions | Retour |
+|---|---|---|---|---|---|
+| 0 | 99,2 % | 81,7 | 29,3 | 16,4 | +33,1 |
+| 1 | 99,6 % | 79,4 | 26,9 | 13,9 | +35,6 |
+| 2 | 99,2 % | 80,0 | 27,6 | 15,0 | +34,7 |
+| 3 | 99,6 % | 79,0 | 26,5 | 13,6 | +36,0 |
+| **Moyenne ± écart-type** | **99,4 % ± 0,2** | **80,0 ± 1,2** | 27,6 ± 1,2 | 14,7 ± 1,3 | +34,8 ± 1,3 |
+
+Par difficulté (coups, graine 0) : facile 76,1 / moyen 81,9 / difficile 84,3 / diabolique 84,5.
+
+**Prédiction** : (1) graine 0 proche de l'essai 10 : **confirmée** (81,7 contre 78,4 sur le pool ; écart de 3 coups attribuable à la généralisation vers des grilles non vues) ; (2) moyenne entre 78 et 84 : **confirmée** (80,0) ; (3) écart-type < 3 : **confirmée** (1,2).
+
+**Critères d'arrêt** : 1 (résolues ≥ 99 %) **atteint** ; 2 (≤ 65 coups) **non atteint** (80,0) ; 3 (stabilité) **atteint** ; la référence plate est donc stable mais loin du seuil. Position : hasard 91,6 > plat 80,0 > MRV 56,1 ; le plat comble ≈ 1/3 de l'écart hasard → MRV. Les répétitions (14,7 sur 27,6 coups faux, soit 53 %) restent la moitié des erreurs. Prochaine étape : Phase 2 (politique factorisée).
+
+### Critère d'arrêt : quand le modèle est-il « un joueur » ?
+
+Fixé le 13 novembre 2026, **avant** l'évaluation de la référence, pour ne pas ajuster les seuils aux résultats. Mesure : 512 grilles du test indépendant, tirage sans mémoire des refus, moyenne des 4 graines d'entraînement.
+
+| # | Critère | Seuil | Repère |
+|---|---|---|---|
+| 1 | Grilles résolues | ≥ 99 % | atteint par l'essai 10 |
+| 2 | Coups par grille | ≤ 65 (≈ 15 coups faux) | réseau actuel ≈ 77, MRV 56,1, hasard 91,6 |
+| 3 | Stabilité | écart-type entre graines < 3 coups, pas de divergence d'entropie | essai 14 = contre-exemple |
+| 4 | Bonus : grilles « diabolique » | meilleur que le hasard avec une marge nette (MRV : 58,2 coups) | à viser seulement si 1 à 3 sont atteints |
+
+**Décision** : si les critères 1 à 3 sont atteints (Phase 2 ou 3), on arrête l'optimisation et on déclare le modèle prêt à jouer. Si la politique factorisée plafonne autour de 70 coups, on documente la limite de REINFORCE seul et on passe à l'actor-critic (Phase 5) au lieu de multiplier les essais, comme pour les essais 10 à 15.
+
+**Entropie (garde-fou, pas un objectif)** : saine entre ≈ 0,9 et 1,2 avec ≈ 100 % de grilles résolues ; alerte si elle passe sous 0,3 ou si elle baisse en même temps que les grilles résolues.
+
+## Références A détaillées (guide de décision, Phase 1 : évaluations)
+
+Décision de départ : `docs/audits/guide_decisions_experiences_agent_sudoku_rl_2026-11-13.md` (deux évaluations distinctes : **A** avec oracle, **B** sans oracle). Cette étape ne concerne que **A** et ne touche pas à l'entraînement. Les chiffres du hasard factorisé et des diagnostics par k, d'abord obtenus par des commandes ponctuelles (contre-expertise de Sonnet), sont maintenant **reproduits par un script versionné** : `scripts/06f_references_A.py` (outils ajoutés à `tools/protocole.py`).
+
+Commande : `.venv/bin/python src/07_sudoku_rl/scripts/06f_references_A.py hasard hasard_facto mrv sudoku_reference_g0 sudoku_reference_g1 sudoku_reference_g2 sudoku_reference_g3` (CPU, 512 grilles, 4 tirages ; commit `a0f577a` avec fichiers non commités ; empreintes des données et des checkpoints dans la sortie). Archives : `logs/sudoku_reference_A_sortie.txt`, `logs/sudoku_reference_A_par_grille.csv` (une ligne par agent, tirage et grille).
+
+| Agent | Résolues | Coups | Faux | Répétitions |
+|---|---|---|---|---|
+| Hasard plat | 99,9 % | 91,4 | 38,8 | 9,1 |
+| **Hasard factorisé** | 100,0 % | **82,8** | 30,2 | 5,6 |
+| Réseau plat (4 graines) | 99,4 % ± 0,3 | **80,1 ± 1,0** | 27,7 ± 1,0 | 14,8 ± 1,1 |
+| MRV | 100,0 % | 56,1 | 3,5 | 0,6 |
+
+(Sur CPU ; le GPU donnait 91,6 / 80,0 ± 1,2 : les nombres tirés dépendent de l'appareil.)
+
+**Diagnostics par k (mesurés, sans effet sur l'entraînement)**
+- Faux avec k = 1 : **0 % pour tous les agents**, hasard compris : c'est le masque (et l'unicité de la solution) qui l'impose, pas un apprentissage.
+- Probabilité de jouer une case à chiffre unique quand il en existe une : hasard plat 0,336 ; hasard factorisé 0,417 ; réseaux **0,384 ± 0,003** ; MRV 1,000. Une telle case existe dans ≈ 95 % des coups des réseaux.
+- Taux de faux selon k (réseaux, g0 à g3) : k = 2 : 0,47 à 0,51 (hasard 0,50) ; k = 3 : 0,53 à 0,56 (hasard 0,67) ; k = 4 : 0,56 à 0,59 (0,75) ; k ≥ 5 : 0,59 à 0,69 (≈ 0,81). Le réseau fait moins d'erreurs que le hasard quand k ≥ 3, mais pas à k = 2. **Non conclu** : on ne sait pas encore si cela vient du choix des cases ou du choix des chiffres.
+- Entropie jointe moyenne des réseaux : 0,952 ± 0,037.
+
+**Limites** : l'appareil CPU change légèrement les chiffres ; les moyennes entre entraînements portent sur 4 graines seulement ; ces mesures ne disent rien de l'évaluation **B** (sans oracle), spécifiée dans `docs/specification_environnement_B_sans_oracle_2026-11-13.md` (document seul, rien d'implémenté ; fin d'épisode immédiate comptée comme échec par contradiction).
