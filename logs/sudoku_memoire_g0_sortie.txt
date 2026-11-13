@@ -1,0 +1,6 @@
+checkpoint : sudoku_reinforce_v30_lr3e3_g0 | 30 vides | horizon 60 | 256 grilles de test
+  mode                          résolues   retour   coups
+  tirage                            100%    +36.0    33.9
+  tirage + mémoire                  100%    +38.3    31.7
+  meilleur coup                      18%    -30.1    54.6
+  meilleur coup + mémoire           100%    +38.4    31.6

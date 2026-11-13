@@ -1,0 +1,42 @@
+appareil : cuda | vides : 30 | horizon : 60 | lot : 64
+
+============================================================
+ÉTAPE 1 : avant apprentissage
+============================================================
+  résolues 100% | retour +34.2 | coups 35.8  (minimum possible : 30 coups)
+
+============================================================
+ÉTAPE 2 : entraînement
+============================================================
+  it     1 | retour  +34.58 | résolues 100% | coups   35.4 | entropie 2.774
+  it    25 | retour  +33.30 | résolues  97% | coups   36.1 | entropie 0.939
+  it    50 | retour  +34.67 | résolues  98% | coups   35.0 | entropie 1.105
+  it    75 | retour  +32.56 | résolues  95% | coups   35.9 | entropie 0.837
+  it   100 | retour  +34.52 | résolues  98% | coups   35.2 | entropie 0.822
+  it   125 | retour  +35.70 | résolues 100% | coups   34.3 | entropie 1.148
+  it   150 | retour  +36.00 | résolues 100% | coups   34.0 | entropie 0.861
+  it   175 | retour  +35.28 | résolues  98% | coups   33.9 | entropie 0.479
+  it   200 | retour  +35.84 | résolues 100% | coups   34.2 | entropie 0.624
+  it   225 | retour  +35.47 | résolues  98% | coups   33.9 | entropie 0.495
+  it   250 | retour  +35.48 | résolues  98% | coups   34.2 | entropie 0.521
+  it   275 | retour  +37.16 | résolues 100% | coups   32.8 | entropie 0.402
+  it   300 | retour  +36.30 | résolues 100% | coups   33.7 | entropie 0.564
+  it   325 | retour  +34.56 | résolues 100% | coups   35.4 | entropie 0.426
+  it   350 | retour  +33.11 | résolues  95% | coups   36.1 | entropie 0.315
+  it   375 | retour  +36.73 | résolues 100% | coups   33.3 | entropie 0.460
+  it   400 | retour  +37.14 | résolues 100% | coups   32.9 | entropie 0.478
+  it   425 | retour  +36.28 | résolues 100% | coups   33.7 | entropie 0.350
+  it   450 | retour  +36.23 | résolues 100% | coups   33.8 | entropie 0.442
+  it   475 | retour  +37.33 | résolues 100% | coups   32.7 | entropie 0.436
+  it   500 | retour  +36.08 | résolues 100% | coups   33.9 | entropie 0.444
+
+  temps : jeu 63.2 s (47%), apprentissage 72.3 s (53%) → 3.69 itérations/s
+
+============================================================
+ÉTAPE 3 : après apprentissage (mêmes grilles de test)
+============================================================
+  avant                 : résolues 100% | retour  +34.18 | coups   35.8
+  après (tirage)        : résolues 100% | retour  +36.99 | coups   33.0
+  après (meilleur coup) : résolues  23% | retour  -25.72 | coups   53.0
+
+  courbe : logs/sudoku_reinforce_v30_lr3e3_g0_graine3.csv | modèle : models/checkpoints/sudoku_reinforce_v30_lr3e3_g0_graine3.pt

@@ -1,0 +1,8 @@
+sudoku_reinforce_complet_lr3e3_g0 graine 0:  tirage 100% +38.0 78.2| tirage + mémoire 100% +48.9 67.3|
+sudoku_reinforce_complet_lr3e3_g0 graine 1:  tirage 100% +36.8 78.8| tirage + mémoire 100% +48.6 66.9|
+sudoku_reinforce_complet_lr3e3_g0 graine 2:  tirage 100% +37.8 77.9| tirage + mémoire 100% +48.5 67.3|
+sudoku_reinforce_complet_lr3e3_g0 graine 3:  tirage 100% +36.7 78.8| tirage + mémoire 100% +48.7 66.8|
+sudoku_reinforce_complet_lot256 graine 0:  tirage 100% +36.0 80.2| tirage + mémoire 100% +52.4 63.8|
+sudoku_reinforce_complet_lot256 graine 1:  tirage 98% +34.9 79.6| tirage + mémoire 100% +52.2 63.3|
+sudoku_reinforce_complet_lot256 graine 2:  tirage 98% +34.8 79.6| tirage + mémoire 100% +52.2 63.6|
+sudoku_reinforce_complet_lot256 graine 3:  tirage 99% +36.8 78.2| tirage + mémoire 100% +52.4 63.1|

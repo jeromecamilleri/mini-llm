@@ -1,0 +1,20 @@
+checkpoint : sudoku_reinforce_complet_lot256 | 256 grilles | 20532 coups joués dont 6939 faux (34%)
+  coups faux qui répètent un coup déjà refusé : 4137 (60% des coups faux)
+  (en les retirant, il resterait 2802 coups faux, soit 10.9 par grille)
+
+1. Erreur selon le nombre de chiffres légaux k dans la case jouée
+    k   coups    faux  hasard
+    1    7782      0%      0%
+    2    5715     53%     50%
+    3    3640     55%     67%
+    4    2253     54%     75%
+    5     954     58%     80%
+    6     180     64%     83%
+
+3. Erreur selon l'avancement (part des cases vides déjà remplies)
+     tranche   coups    faux  répétitions
+    0%- 20%    6165     54%          58%
+   20%- 40%    4522     39%          61%
+   40%- 60%    3683     28%          63%
+   60%- 80%    3322     18%          60%
+   80%-100%    2840      8%          60%

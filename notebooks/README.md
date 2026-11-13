@@ -15,6 +15,8 @@ C'est pourquoi les leçons restent des scripts, et que les notebooks servent aux
 
 ## Exemple
 
+[`02_courbes_sudoku.ipynb`](02_courbes_sudoku.ipynb) suit l'apprentissage du chapitre `07_sudoku_rl` : nombre de coups par partie et entropie, avec moyenne glissante, pour les essais REINFORCE de `logs/sudoku_reinforce_*.csv`. Ajouter un essai dans le dictionnaire `ESSAIS_30` le fait apparaître sur toutes les courbes.
+
 [`01_comparer_les_courbes.ipynb`](01_comparer_les_courbes.ipynb) lit les CSV de `logs/` et trace la perte de validation de 0, B et A. Changer l'échelle (`plt.ylim`) et relancer une seule cellule suffit pour zoomer sur la fin des courbes.
 
 Résultat obtenu (11 novembre 2026, avec D) :

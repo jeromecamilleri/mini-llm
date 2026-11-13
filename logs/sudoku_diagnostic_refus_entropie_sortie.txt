@@ -1,0 +1,20 @@
+checkpoint : sudoku_reinforce_complet_refus_entropie | 256 grilles | 21395 coups joués dont 9062 faux (42%)
+  coups faux qui répètent un coup déjà refusé : 4776 (53% des coups faux)
+  (en les retirant, il resterait 4286 coups faux, soit 16.7 par grille)
+
+1. Erreur selon le nombre de chiffres légaux k dans la case jouée
+    k   coups    faux  hasard
+    1    4508      0%      0%
+    2    5888     46%     50%
+    3    6242     57%     67%
+    4    3319     58%     75%
+    5    1087     57%     80%
+    6     328     77%     83%
+
+3. Erreur selon l'avancement (part des cases vides déjà remplies)
+     tranche   coups    faux  répétitions
+    0%- 20%    5463     48%          28%
+   20%- 40%    5236     50%          52%
+   40%- 60%    5057     53%          71%
+   60%- 80%    2932     20%          48%
+   80%-100%    2707     20%          93%

@@ -1,0 +1,45 @@
+======================================================================
+ÉTAPE 1 : la courbe (it. = itération ; entropie = hésitation du réseau)
+======================================================================
+    it |     sans refus (essai 10)      |     avec refus (essai 14)     
+       |  entropie  résolues     coups |  entropie  résolues     coups
+     1 |      3.93      1.00     89.30 |      3.93      1.00     89.30
+     5 |      2.69      0.97     96.64 |      1.95      0.75    110.61
+    10 |      2.25      0.97     92.31 |      2.60      1.00     85.27
+    25 |      1.48      0.94     90.22 |      1.17      0.91     95.36
+    30 |      1.35      0.97     89.66 |      0.80      0.81    102.53
+    50 |      1.29      1.00     84.31 |      0.76      0.89     89.95
+   100 |      1.14      1.00     82.83 |      0.45      0.83     86.17
+   150 |      1.21      0.97     82.77 |      0.21      0.66     97.73
+   200 |      1.17      0.98     82.27 |      0.11      0.80     82.95
+   225 |      1.18      1.00     78.50 |      0.10      0.44    114.31
+   250 |      1.22      0.98     79.94 |      0.20      0.66    101.06
+   275 |      1.09      1.00     83.97 |      0.06      0.64     96.48
+   282 |      1.08      0.97     81.73 |      0.04      0.44    113.70
+   290 |      1.25      1.00     82.12 |      0.07      0.66     95.66
+   300 |      1.21      1.00     82.78 |      0.01      0.05    145.69
+   304 |      1.16      0.98     80.75 |      0.00      0.00    150.00
+   350 |      1.00      1.00     83.12 |      0.00      0.02    148.62
+   500 |      1.04      1.00     76.58 |      0.00      0.00    150.00
+
+  entropie minimale de l'essai 10 : 0.886
+  entropie de l'essai 14 : < 0,10 dès l'it. 218, < 0,01 dès l'it. 300
+  première it. avec moins de 50 % de grilles résolues : 218
+  retour moyen (it. 400 à 500) : -146.8 (150 coups tous faux = −150 ; 148 faux et 2 justes = −146)
+
+======================================================================
+ÉTAPE 2 : le réseau final rejoue la grille n° 0
+======================================================================
+  coup   1 : action 118 | p = 1.000000 | juste : False | déjà refusée : False | score du 1er − score du 2e =    174437
+  coup   2 : action 118 | p = 1.000000 | juste : False | déjà refusée : True  | score du 1er − score du 2e =    153158
+  coup   3 : action 118 | p = 1.000000 | juste : False | déjà refusée : True  | score du 1er − score du 2e =    153158
+  coup   4 : action 118 | p = 1.000000 | juste : False | déjà refusée : True  | score du 1er − score du 2e =    153158
+  coup 150 : action 118 | p = 1.000000 | juste : False | déjà refusée : True  | score du 1er − score du 2e =    153158
+  sur 150 coups : 0 justes, 1 action(s) distincte(s), 149 répétitions d'un refus
+  → il voit le refus (le score baisse de 174 437 à 153 158), mais l'écart reste énorme : il rejoue le même coup.
+
+======================================================================
+ÉTAPE 3 : l'échelle des scores (logits) sur les 256 grilles de départ
+======================================================================
+  essai 10 (sans refus)    : scores des coups autorisés de          -76 à           14 (écart-type       23.6)
+  essai 14 (avec refus)    : scores des coups autorisés de     -3714964 à      4734267 (écart-type  1117306.1)
